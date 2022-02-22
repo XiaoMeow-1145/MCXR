@@ -3,8 +3,6 @@ package net.sorenon.mcxr.play.openxr;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.TextureUtil;
-import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
@@ -175,6 +173,19 @@ public class XrRenderer {
                     Minecraft.getInstance().player,
                     MCXRPlayClient.viewSpacePoses.getScaledPhysicalPose()
             );
+            for (int i = 0; i < 2; i++) {
+                if(i == 0) {
+                    MCXRCore.INSTANCE.setPlayerLeftArmPose(
+                            Minecraft.getInstance().player,
+                            XrInput.handsActionSet.gripPoses[i].getScaledPhysicalPose()
+                    );
+                } else {
+                    MCXRCore.INSTANCE.setPlayerRightArmPose(
+                            Minecraft.getInstance().player,
+                            XrInput.handsActionSet.gripPoses[i].getScaledPhysicalPose()
+                    );
+                }
+            }
         }
         clientExt.preRender(true);
         updatePoses(camera.getEntity());
