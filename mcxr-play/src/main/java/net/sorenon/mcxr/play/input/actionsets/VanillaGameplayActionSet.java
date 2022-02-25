@@ -75,25 +75,47 @@ public class VanillaGameplayActionSet extends ActionSet {
     }
 
     public void getDefaultBindings(HashMap<String, List<Pair<Action, String>>> map) {
-        map.computeIfAbsent("/interaction_profiles/oculus/touch_controller", aLong -> new ArrayList<>()).addAll(
-                List.of(
-                        new Pair<>(use, "/user/hand/left/input/trigger/value"),
-                        new Pair<>(attack, "/user/hand/right/input/trigger/value"),
-                        new Pair<>(move, "/user/hand/left/input/thumbstick"),
-                        new Pair<>(hotbarLeft, "/user/hand/left/input/squeeze"),
-                        new Pair<>(hotbarRight, "/user/hand/right/input/squeeze"),
-                        new Pair<>(turn, "/user/hand/right/input/thumbstick/x"),
-                        new Pair<>(inventory, "/user/hand/left/input/y/click"),
-                        new Pair<>(jump, "/user/hand/right/input/a/click"),
-                        new Pair<>(sprint, "/user/hand/left/input/thumbstick/click"),
-                        new Pair<>(sneak, "/user/hand/right/input/thumbstick"),
-                        new Pair<>(resetPos, "/user/hand/right/input/thumbstick/click"),
-                        new Pair<>(teleport, "/user/hand/right/input/b/click"),
-                        new Pair<>(menu, "/user/hand/left/input/menu/click"),
-                        new Pair<>(hapticLeft, "/user/hand/left/output/haptic"),
-                        new Pair<>(hapticRight, "/user/hand/right/output/haptic")
-                )
-        );
+        if (MCXRPlayClient.mainHand == 1) {
+            map.computeIfAbsent("/interaction_profiles/oculus/touch_controller", aLong -> new ArrayList<>()).addAll(
+                    List.of(
+                            new Pair<>(use, "/user/hand/left/input/trigger/value"),
+                            new Pair<>(attack, "/user/hand/right/input/trigger/value"),
+                            new Pair<>(move, "/user/hand/left/input/thumbstick"),
+                            new Pair<>(hotbarLeft, "/user/hand/left/input/squeeze"),
+                            new Pair<>(hotbarRight, "/user/hand/right/input/squeeze"),
+                            new Pair<>(turn, "/user/hand/right/input/thumbstick/x"),
+                            new Pair<>(inventory, "/user/hand/left/input/y/click"),
+                            new Pair<>(jump, "/user/hand/right/input/a/click"),
+                            new Pair<>(sprint, "/user/hand/left/input/thumbstick/click"),
+                            new Pair<>(sneak, "/user/hand/right/input/thumbstick"),
+                            new Pair<>(resetPos, "/user/hand/right/input/thumbstick/click"),
+                            new Pair<>(teleport, "/user/hand/right/input/b/click"),
+                            new Pair<>(menu, "/user/hand/left/input/menu/click"),
+                            new Pair<>(hapticLeft, "/user/hand/left/output/haptic"),
+                            new Pair<>(hapticRight, "/user/hand/right/output/haptic")
+                    )
+            );
+        } else {
+            map.computeIfAbsent("/interaction_profiles/oculus/touch_controller", aLong -> new ArrayList<>()).addAll(
+                    List.of(
+                            new Pair<>(use, "/user/hand/right/input/trigger/value"),
+                            new Pair<>(attack, "/user/hand/left/input/trigger/value"),
+                            new Pair<>(move, "/user/hand/right/input/thumbstick"),
+                            new Pair<>(hotbarLeft, "/user/hand/right/input/squeeze"),
+                            new Pair<>(hotbarRight, "/user/hand/left/input/squeeze"),
+                            new Pair<>(turn, "/user/hand/left/input/thumbstick/x"),
+                            new Pair<>(inventory, "/user/hand/right/input/y/click"),
+                            new Pair<>(jump, "/user/hand/left/input/a/click"),
+                            new Pair<>(sprint, "/user/hand/right/input/thumbstick/click"),
+                            new Pair<>(sneak, "/user/hand/left/input/thumbstick"),
+                            new Pair<>(resetPos, "/user/hand/left/input/thumbstick/click"),
+                            new Pair<>(teleport, "/user/hand/left/input/b/click"),
+                            new Pair<>(menu, "/user/hand/left/input/menu/click"),
+                            new Pair<>(hapticLeft, "/user/hand/left/output/haptic"),
+                            new Pair<>(hapticRight, "/user/hand/right/output/haptic")
+                    )
+            );
+        }
         //  map.computeIfAbsent("/interaction_profiles/valve/index_controller", aLong -> new ArrayList<>()).addAll(
         //          List.of(
         //                  new Pair<>(use, "/user/hand/left/input/trigger/value"),
