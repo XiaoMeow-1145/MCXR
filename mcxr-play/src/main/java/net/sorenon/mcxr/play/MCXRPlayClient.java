@@ -5,8 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.*;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -29,6 +28,11 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.openxr.XR;
 import virtuoel.pehkui.util.ScaleUtils;
+
+import java.awt.*;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static net.minecraft.client.gui.GuiComponent.GUI_ICONS_LOCATION;
 
@@ -73,6 +77,10 @@ public class MCXRPlayClient implements ClientModInitializer {
     public static float handPitchAdjust = 30;
 
     public static int mainHand = 1;
+
+    public static final CycleOption<Boolean> leftHanded = CycleOption.createOnOff("Left Handed",
+            options -> mainHand == 0,
+            (options, option, bool) -> mainHand = bool ? 0 : 1);
 
     @Override
     public void onInitializeClient() {
