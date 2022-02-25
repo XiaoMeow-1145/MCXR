@@ -17,6 +17,7 @@
     "flatgui.MinecraftMixin",
     "flatgui.MouseMixin",
     "flatgui.ScreenMixin",
+    "flatgui.ControlsScreenMixin",
     "hands.GameRendererMixin",
     "rendering.GameRendererMixin",
     "rendering.InGameHudMixin",
