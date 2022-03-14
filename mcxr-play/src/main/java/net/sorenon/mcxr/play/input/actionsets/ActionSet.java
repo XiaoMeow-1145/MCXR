@@ -23,7 +23,7 @@ public abstract class ActionSet implements AutoCloseable {
 
     public final String name;
     private XrActionSet handle;
-    private int priority;
+    private final int priority;
 
     public ActionSet(String name, int priority) {
         this.name = name;

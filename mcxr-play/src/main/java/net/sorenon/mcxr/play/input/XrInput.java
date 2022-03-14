@@ -2,6 +2,8 @@ package net.sorenon.mcxr.play.input;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.sorenon.mcxr.core.JOMLUtil;
 import net.sorenon.mcxr.core.Pose;
@@ -45,7 +47,7 @@ public final class XrInput {
     private XrInput() {
     }
 
-    //TODO registryify this
+    //TODO registry-ify this
     public static void reinitialize(OpenXRSession session) throws XrException {
         OpenXRInstance instance = session.instance;
 
@@ -213,16 +215,6 @@ public final class XrInput {
                 client.player.setShiftKeyDown(true);
             }
         }
-//        if (actionSet.attackState.changedSinceLastSync()) {
-//            MinecraftClient client = MinecraftClient.getInstance();
-//            InputUtil.Key key = client.options.keyAttack.getDefaultKey();
-//            if (actionSet.attackState.currentState()) {
-//                KeyBinding.onKeyPressed(key);
-//                KeyBinding.setKeyPressed(key, true);
-//            } else {
-//                KeyBinding.setKeyPressed(key, false);
-//            }
-//        }
         if (actionSet.use.changedSinceLastSync) {
             Minecraft client = Minecraft.getInstance();
             InputConstants.Key key = client.options.keyUse.getDefaultKey();
@@ -231,6 +223,18 @@ public final class XrInput {
                 KeyMapping.set(key, true);
             } else {
                 KeyMapping.set(key, false);
+            }
+        }
+        if (actionSet.menu.changedSinceLastSync) {
+            Minecraft client = Minecraft.getInstance();
+            if (actionSet.menu.currentState && client.screen == null) {
+                client.setScreen(new PauseScreen(true));
+            }
+        }
+        if (actionSet.chat.changedSinceLastSync) {
+            Minecraft client = Minecraft.getInstance();
+            if (actionSet.chat.currentState && client.screen == null) {
+                client.setScreen(new ChatScreen(""));
             }
         }
     }
