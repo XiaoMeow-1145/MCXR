@@ -3,6 +3,7 @@ package net.sorenon.mcxr.play;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Option;
+import net.sorenon.mcxr.play.openxr.OpenXRState;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -13,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.openxr.OpenXRInstance;
-import net.sorenon.mcxr.play.openxr.OpenXRState;
 import net.sorenon.mcxr.play.openxr.OpenXRSystem;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +36,8 @@ public class MCXROptionsScreen extends Screen {
     @Override
     protected void init() {
         PlayOptions.load();
+
+/*
         this.reloadButton = this.addRenderableWidget(new Button(
                 this.width / 2 - 155,
                 this.height / 6 - 12 - 4 + 24,
@@ -46,7 +48,9 @@ public class MCXROptionsScreen extends Screen {
         if (PlayOptions.xrUninitialized) {
             reloadButton.active = false;
         }
+*/
 
+/*
         this.addRenderableWidget(new Button(
                 this.width / 2 + 5,
                 this.height / 6 - 12 - 4 + 24,
@@ -62,7 +66,9 @@ public class MCXROptionsScreen extends Screen {
                     }
                     button.setMessage(PlayOptions.xrUninitialized ? new TranslatableComponent("mcxr.options.initialize") : new TranslatableComponent("mcxr.options.uninitialize"));
                 }));
+*/
 
+/*
         this.addRenderableWidget(new Button(
                 this.width / 2 - 100,
                 this.height / 6 - 12 - 4,
@@ -74,6 +80,8 @@ public class MCXROptionsScreen extends Screen {
                     PlayOptions.save();
                     button.setMessage(PlayOptions.xrPaused ? new TranslatableComponent("mcxr.options.unpause") : new TranslatableComponent("mcxr.options.pause"));
                 }));
+*/
+
 
         this.addRenderableWidget(new Button(
                 this.width / 2 - 155,
@@ -107,6 +115,17 @@ public class MCXROptionsScreen extends Screen {
                     PlayOptions.flyDirection = PlayOptions.flyDirection.iterate();
                     PlayOptions.save();
                     button.setMessage(new TranslatableComponent("mcxr.options.fly_direction", PlayOptions.flyDirection.toComponent()));
+                }));
+
+        this.addRenderableWidget(new Button(
+                this.width / 2 - 155,
+                this.height / 6 + 54 + 24 * 3 + 12,
+                150,
+                20,
+                MCXRPlayClient.heightAdjustStand ? new TranslatableComponent("mcxr.options.unlock_playerheight") : new TranslatableComponent("mcxr.options.lock_playerheight"),
+                button -> {
+                    MCXRPlayClient.heightAdjustStand = !MCXRPlayClient.heightAdjustStand;
+                    button.setMessage(MCXRPlayClient.heightAdjustStand ? new TranslatableComponent("mcxr.options.unlock_playerheight") : new TranslatableComponent("mcxr.options.lock_playerheight"));
                 }));
 
         assert this.minecraft != null;

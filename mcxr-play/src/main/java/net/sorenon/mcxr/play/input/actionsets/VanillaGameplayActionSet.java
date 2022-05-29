@@ -17,7 +17,6 @@ public class VanillaGameplayActionSet extends ActionSet {
     public final BoolAction sprint = new BoolAction("sprint");
     public final BoolAction sneak = new BoolAction("sneak");
     public final BoolAction resetPos = new BoolAction("reset_pos");
-    //public final BoolAction teleport = new BoolAction("teleport"); //TODO switch to Alyx-like bindings
     public final BoolAction quickmenu = new BoolAction("quickmenu");
     public final BoolAction chat = new BoolAction("chat");
     public final BoolAction stand = new BoolAction("stand");
@@ -30,8 +29,8 @@ public class VanillaGameplayActionSet extends ActionSet {
     public final FloatAction hotbar = new FloatAction("hotbar");
     public final Vec2fAction move = new Vec2fAction("move");
 
-    public final BoolAction hotbarLeft = new BoolAction("hotbar_left");
-    public final BoolAction hotbarRight = new BoolAction("hotbar_right");
+    public final FloatAction hotbarLeft = new FloatAction("hotbar_left");
+    public final FloatAction hotbarRight = new FloatAction("hotbar_right");
     //TODO remove these with new input system
     public final BoolAction turnLeft = new BoolAction("turn_left");
     public final BoolAction turnRight = new BoolAction("turn_right");
@@ -112,6 +111,7 @@ public class VanillaGameplayActionSet extends ActionSet {
                         new Pair<>(sneakAnalog, "/user/hand/right/input/thumbstick/y"),
                         new Pair<>(sprintAnalog, "/user/hand/right/input/thumbstick/y"),
                         new Pair<>(swapHands, "/user/hand/left/input/thumbstick/click"),
+
                         new Pair<>(teleport, "/user/hand/left/input/x/click")
                 ));
 

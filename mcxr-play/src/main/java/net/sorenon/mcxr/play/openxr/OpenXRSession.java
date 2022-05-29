@@ -1,5 +1,6 @@
 package net.sorenon.mcxr.play.openxr;
 
+import net.minecraft.client.Minecraft;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.input.ControllerPoses;
 import net.sorenon.mcxr.play.input.actionsets.ActionSet;
@@ -181,6 +182,7 @@ public class OpenXRSession implements AutoCloseable {
             }
             case XR10.XR_SESSION_STATE_EXITING: {
                 // Do not attempt to restart because user closed this session.
+                Minecraft.getInstance().close();
                 return true;
             }
             case XR10.XR_SESSION_STATE_LOSS_PENDING: {

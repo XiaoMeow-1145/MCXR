@@ -5,17 +5,21 @@
   "name": "[MCXR] Core",
   "description": "Lightweight XR friendly framework. Allows VR-players to use all vr features.\nThis mod does NOT let you play on vr by itself [MCXR] Play is needed too.",
   "authors": [
-    "Sorenon"
+    "Sorenon",
+    "TheJudge",
+    "CADIndie",
+    "IzzyDotExe",
+    "Flamgop"
   ],
   "contact": {
-    "homepage": "https://github.com/Sorenon/MCXR",
+    "homepage": "https://github.com/QuestCraftPlusPlus/MCXR",
     "sources": "https://github.com/Sorenon/MCXR",
-    "issues": "https://github.com/Sorenon/MCXR/issues"
+    "issues": "https://github.com/QuestCraftPlusPlus/MCXR/issues"
   },
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/CqEZbJwWx4"
+        "modmenu.discord": "https://discord.gg/questcraft"
       },
       "parent": "mcxr-play"
     }
