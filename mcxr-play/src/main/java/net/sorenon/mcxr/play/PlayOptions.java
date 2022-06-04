@@ -25,6 +25,7 @@ public class PlayOptions {
     public static boolean immersiveControls = true;
     public static boolean teleportEnabled = false;
 
+    public static boolean fullMirror = false;
     /**
      * The angle to rotate the player's in-game hand for a more comfortable experience
      * May be different for different controllers -> needs testing
@@ -55,6 +56,7 @@ public class PlayOptions {
         fileConfig.set("indexTouchpadState", indexTouchpadState);
         fileConfig.set("teleportEnabled", teleportEnabled);
         fileConfig.set("immersiveControls", immersiveControls);
+        fileConfig.set("fullMirror",fullMirror);
 
         fileConfig.set("SSAA", SSAA);
         fileConfig.save();
@@ -75,6 +77,7 @@ public class PlayOptions {
         snapTurnAmount = fileConfig.<Number>getOrElse("snapTurnAmount", 22f).floatValue();
         smoothTurnRate = fileConfig.<Number>getOrElse("smoothTurnRate", 120f).floatValue();
         indexTouchpadState = fileConfig.getEnumOrElse("indexTouchpadState", IndexTouchpad.Off);
+        fullMirror=fileConfig.getOrElse("fullMirror",false);
 
         teleportEnabled = fileConfig.getOrElse("teleportEnabled", true);
 
