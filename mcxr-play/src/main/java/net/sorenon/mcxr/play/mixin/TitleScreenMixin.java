@@ -71,10 +71,7 @@ public abstract class TitleScreenMixin extends Screen {
                     }
 
                     // Common options for both platforms.
-                    this.minecraft.options.graphicsMode = GraphicsStatus.FABULOUS;
-                    this.minecraft.options.framerateLimit = 72;
-                    this.minecraft.options.renderClouds = CloudStatus.OFF;
-
+                    this.minecraft.options.graphicsMode = GraphicsStatus.FANCY;
                 }))
         );
 
