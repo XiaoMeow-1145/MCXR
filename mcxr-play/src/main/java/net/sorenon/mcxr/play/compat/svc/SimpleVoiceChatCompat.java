@@ -3,6 +3,7 @@ package net.sorenon.mcxr.play.compat.svc;
 import de.maxhenkel.voicechat.gui.VoiceChatScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;

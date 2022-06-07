@@ -21,6 +21,13 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+    maven {
+        name = "tterrag maven"
+        url = uri("https://maven.tterrag.com/")
+    }
+    maven {
+        url = uri("https://www.cursemaven.com")
+    }
 }
 
 dependencies {
@@ -45,6 +52,8 @@ dependencies {
     implementation("org.joml:joml:${properties["joml_version"].toString()}")
     implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")
     implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")
+    modImplementation("com.jozufozu.flywheel:Flywheel-Fabric:${properties["flywheel_version"].toString()}")
+    modImplementation("curse.maven:create-624165:3817569")
     include(modImplementation("com.github.Sorenon:fart:51f6a721e7")!!)
 }
 
