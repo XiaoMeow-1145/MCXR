@@ -2,21 +2,18 @@ package net.sorenon.mcxr.play.input;
 
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.sorenon.mcxr.core.JOMLUtil;
-import net.sorenon.mcxr.core.MCXRCore;
 import net.sorenon.mcxr.core.Pose;
-import net.sorenon.mcxr.core.Teleport;
 import net.sorenon.mcxr.play.MCXRGuiManager;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.PlayOptions;
@@ -55,6 +52,8 @@ public final class XrInput {
     public static final GuiActionSet guiActionSet = new GuiActionSet();
 
     private static long lastPollTime = 0;
+
+    public static boolean teleport = false;
 
 
     private XrInput() {
@@ -112,11 +111,11 @@ public final class XrInput {
             );
             // Attach the action set we just made to the session
             instance.checkPanic(XR10.xrAttachSessionActionSets(session.handle, attach_info), "xrAttachSessionActionSets");
+        }
 
-            for (var action : handsActionSet.actions()) {
-                if (action instanceof SessionAwareAction sessionAwareAction) {
-                    sessionAwareAction.createHandleSession(session);
-                }
+        for (var action : handsActionSet.actions()) {
+            if (action instanceof SessionAwareAction sessionAwareAction) {
+                sessionAwareAction.createHandleSession(session);
             }
         }
     }
@@ -185,6 +184,10 @@ public final class XrInput {
             }
         }
 
+        if (actionSet.teleport.changedSinceLastSync && !actionSet.teleport.currentState) {
+            XrInput.teleport = true;
+        }
+
         if (PlayOptions.smoothTurning) {
             if (Math.abs(actionSet.turn.currentState) > 0.4) {
                 float delta = (time - lastPollTime) / 1_000_000_000f;
@@ -220,6 +223,30 @@ public final class XrInput {
                 if (Minecraft.getInstance().player != null)
                     Minecraft.getInstance().player.getInventory().swapPaint(-value);
                 actionSet.hotbarActivated = true;
+            }
+        }
+        if (actionSet.hotbarLeft.currentState && actionSet.hotbarLeft.changedSinceLastSync) {
+            if (Minecraft.getInstance().player != null) {
+                int selected = Minecraft.getInstance().player.getInventory().selected;
+                selected += 1;
+                while (selected < 0) {
+                    selected += 9;
+                }
+                while (selected >= 9) {
+                    selected -= 9;
+                }
+            }
+        }
+        if (actionSet.hotbarRight.currentState && actionSet.hotbarRight.changedSinceLastSync) {
+            if (Minecraft.getInstance().player != null) {
+                int selected = Minecraft.getInstance().player.getInventory().selected;
+                selected -= 1;
+                while (selected < 0) {
+                    selected += 9;
+                }
+                while (selected >= 9) {
+                    selected -= 9;
+                }
             }
         }
 
@@ -265,17 +292,6 @@ public final class XrInput {
                 }
             }
         }
-        if (actionSet.sprint.changedSinceLastSync) {
-            Minecraft client = Minecraft.getInstance();
-            if (actionSet.sprint.currentState) {
-                client.options.keySprint.setDown(true);
-            } else {
-                client.options.keySprint.setDown(false);
-                if (client.player != null) {
-                    client.player.setSprinting(false);
-                }
-            }
-        }
 
         if (actionSet.sprintAnalog.changedSinceLastSync) {
             float value = actionSet.sprintAnalog.currentState;
@@ -297,14 +313,6 @@ public final class XrInput {
                 if (client.player != null) {
                     client.player.setSprinting(false);
                 }
-            }
-        }
-
-        if (actionSet.sneak.changedSinceLastSync) {
-            Minecraft client = Minecraft.getInstance();
-            client.options.keyShift.setDown(actionSet.sneak.currentState);
-            if (client.player != null) {
-                client.player.setShiftKeyDown(true);
             }
         }
 
