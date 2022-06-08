@@ -144,20 +144,7 @@ public class MCXROptionsScreen extends Screen {
                     button.setMessage(PlayOptions.smoothTurning ? new TranslatableComponent("mcxr.options.enable_snap_turning") : new TranslatableComponent("mcxr.options.enable_smooth_turning"));
                 }));
 
-        this.addRenderableWidget(new Button(
-                this.width / 2 - 155 + 160,
-                this.height / 6 + 54 + 24 + 12,
-                150,
-                20,
-                PlayOptions.smoothTurning ? new TranslatableComponent("mcxr.options.enable_snap_turning") : new TranslatableComponent("mcxr.options.enable_smooth_turning"),
-                button -> {
-                    PlayOptions.smoothTurning = !PlayOptions.smoothTurning;
-                    PlayOptions.save();
-                    button.setMessage(PlayOptions.smoothTurning ? new TranslatableComponent("mcxr.options.enable_snap_turning") : new TranslatableComponent("mcxr.options.enable_smooth_turning"));
-                }));
-
-        if (true ||
-                MCXRPlayClient.MCXR_GAME_RENDERER.isXrMode() &&
+        if (MCXRPlayClient.MCXR_GAME_RENDERER.isXrMode() &&
                 (XrInput.vanillaGameplayActionSet.indexTrackpadRight.isActive || XrInput.vanillaGameplayActionSet.indexTrackpadLeft.isActive)) {
             this.addRenderableWidget(new Button(
                     this.width / 2 - 155 + 160,
