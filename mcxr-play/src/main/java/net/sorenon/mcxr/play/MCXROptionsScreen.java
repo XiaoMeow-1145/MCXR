@@ -149,7 +149,7 @@ public class MCXROptionsScreen extends Screen {
                     this.height / 6 + 54 + 24 * 2 + 12,
                     150,
                     20,
-                    new TranslatableComponent("mcxr.options.immersive_controls", PlayOptions.immersiveControls ? new TranslatableComponent("mcxr.options_disable_immersive_controls") : new TranslatableComponent("mcxr.options_enable_immersive_controls")),
+                    PlayOptions.immersiveControls ? new TranslatableComponent("mcxr.options_disable_immersive_controls") : new TranslatableComponent("mcxr.options_enable_immersive_controls"),
                     button -> {
                         PlayOptions.immersiveControls = !PlayOptions.immersiveControls;
                         PlayOptions.save();
