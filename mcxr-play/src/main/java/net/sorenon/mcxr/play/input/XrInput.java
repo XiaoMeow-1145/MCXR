@@ -201,7 +201,9 @@ public final class XrInput {
             float delta = (time - lastPollTime) / 1_000_000_000f;
             double velo = gripPos.distanceTo(gripPosOld)/delta;
             //delay before attacking starts/stops by building up motion points
-            if(velo>1){motionPoints+=1*velo;}
+            if(velo>1 || velo<-1){
+                motionPoints+=Math.abs(velo);
+             }
             else if(motionPoints>0){motionPoints-=1;}
 
             gripPosOld = gripPos;
@@ -463,7 +465,7 @@ public final class XrInput {
                 var hitResult = Minecraft.getInstance().hitResult;
                 Pose handPoint = handsActionSet.aimPoses[MCXRPlayClient.getMainHand()].getMinecraftPose();
                 Vec3 handPos = convert(handPoint.getPos());
-                if(motionPoints>8){
+                if(motionPoints>12){
                     if (hitResult != null) {
                         double dist = handPos.distanceTo(hitResult.getLocation());
                         if(lastHit == null  || lastHit.equals(hitResult)) {
