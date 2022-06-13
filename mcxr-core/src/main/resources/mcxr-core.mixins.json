@@ -10,7 +10,9 @@
     "ServerLoginNetworkHandlerAcc",
     "hands.EntityMixin",
     "hands.LivingEntityMixin",
-    "hands.ServerPlayerGameModeMixin"
+    "hands.ServerPlayerGameModeMixin",
+    "BowItemMixin",
+    "CrossbowItemMixin"
   ],
   "client": [
     "hands.client.MultiPlayerGameModeMixin"
