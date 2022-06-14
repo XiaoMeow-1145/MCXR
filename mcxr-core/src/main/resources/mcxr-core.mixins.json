@@ -11,8 +11,8 @@
     "hands.EntityMixin",
     "hands.LivingEntityMixin",
     "hands.ServerPlayerGameModeMixin",
-    "BowItemMixin",
-    "CrossbowItemMixin"
+    "HumanoidModelMixin",
+    "BowItemMixin"
   ],
   "client": [
     "hands.client.MultiPlayerGameModeMixin"
