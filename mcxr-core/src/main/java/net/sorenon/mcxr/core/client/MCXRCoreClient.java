@@ -59,6 +59,16 @@ public class MCXRCoreClient implements ClientModInitializer {
                     pose.pos.set(vec);
                     pose.orientation.set(quat);
                     acc.getHeadPose().set(pose);
+                    var pose1 = new Pose();
+                    var pose2 = new Pose();
+                    var pose3 = new Pose();
+                    pose1.read(buf);
+                    acc.getHeadPose().set(pose1);
+                    pose2.read(buf);
+                    acc.getLeftHandPose().set(pose2);
+                    pose3.read(buf);
+                    acc.getRightHandPose().set(pose3);
+                    acc.setHeight(buf.readFloat());
                 }
             }
         });
