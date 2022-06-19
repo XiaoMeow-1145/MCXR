@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import static net.sorenon.mcxr.play.PlayOptions.jsonFileConfig;
 
 public class QuickMenu extends Screen {
+    ArrayList<Config> c = jsonFileConfig.get("buttons");
     public static ArrayList<Button> QuickMenuButtons = new ArrayList<>();
 
     public QuickMenu(Component component) {
@@ -35,7 +36,6 @@ public class QuickMenu extends Screen {
             Minecraft.getInstance().setScreen(new XrChatScreen(""));
         }));
 
-        ArrayList<Config> c = jsonFileConfig.get("buttons");
         for(Config entry : c) {
             String name = entry.get("name");
             int key = entry.get("key");
