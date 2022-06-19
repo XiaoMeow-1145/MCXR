@@ -52,7 +52,8 @@ dependencies {
     implementation("org.joml:joml:${properties["joml_version"].toString()}")
     implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")
     implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")
-    include(modImplementation("com.github.thejudge156:fart:ca52671672")!!)
+    implementation("com.electronwill.night-config:json:${properties["night_config_version"].toString()}")
+    include(modImplementation("com.github.Sorenon:fart:51f6a721e7")!!)
 }
 
 sourceSets {
