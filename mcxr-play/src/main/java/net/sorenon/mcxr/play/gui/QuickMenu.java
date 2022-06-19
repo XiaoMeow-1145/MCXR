@@ -1,29 +1,28 @@
 package net.sorenon.mcxr.play.gui;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.electronwill.nightconfig.core.Config;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.compat.svc.SimpleVoiceChatCompat;
 import net.sorenon.mcxr.play.mixin.accessor.MouseHandlerAcc;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
+import static net.sorenon.mcxr.play.PlayOptions.jsonFileConfig;
+
 public class QuickMenu extends Screen {
+    public static ArrayList<Button> QuickMenuButtons = new ArrayList<>();
 
     public QuickMenu(Component component) {
         super(component);
     }
 
-    private void renderMenuButtons(PoseStack stack) {
-
-        ArrayList<Button> QuickMenuButtons = new ArrayList<>();
+    private void renderMenuButtons() {
 
         QuickMenuButtons.add(new Button((this.width/2) - 25, this.height/2, 70, 20, Component.translatable("QuickChat"), (button ) -> {
             Minecraft.getInstance().setScreen(new net.sorenon.mcxr.play.gui.QuickChat("QuickChat"));
@@ -36,14 +35,17 @@ public class QuickMenu extends Screen {
             Minecraft.getInstance().setScreen(new XrChatScreen(""));
         }));
 
-
-        for(JsonElement element : PlayOptions.configurations.getAsJsonArray("buttons")) {
-            JsonObject object = element.getAsJsonObject();
-            QuickMenuButtons.add(new Button((width/2) - 25, height/2 + 20, 70 + Minecraft.getInstance().font.width(""), 20, Component.literal(object.get("name").getAsString()), button -> {
-                MouseHandlerAcc mouseHandler = (MouseHandlerAcc) Minecraft.getInstance().mouseHandler;
-                mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
-                        object.get("key").getAsInt(), GLFW.GLFW_PRESS, 0);
-            }));
+        ArrayList<Config> c = jsonFileConfig.get("buttons");
+        for(Config entry : c) {
+            String name = entry.get("name");
+            int key = entry.get("key");
+            if(jsonFileConfig != null) {
+                QuickMenuButtons.add(new Button((this.width / 2) - 25, this.height / 2 + 20, 70 + Minecraft.getInstance().font.width(name), 20, Component.literal(name), button -> {
+                    MouseHandlerAcc mouseHandler = (MouseHandlerAcc) Minecraft.getInstance().mouseHandler;
+                    mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
+                            key, GLFW.GLFW_PRESS, 0);
+                }));
+            }
         }
 
         for (int i = 0; i < QuickMenuButtons.size(); i++) {
@@ -60,11 +62,11 @@ public class QuickMenu extends Screen {
     @Override
     protected void init() {
         super.init();
+        renderMenuButtons();
     }
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
-        renderMenuButtons(poseStack);
         super.render(poseStack, i, j, f);
     }
 }
