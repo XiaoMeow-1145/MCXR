@@ -6,7 +6,7 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "FlwConfigMixin",
-    "UIRenderHelper$CustomRenderTargetMixin"
+    "CustomRenderTargetMixin"
   ],
   "injectors": {
     "defaultRequire": 1
