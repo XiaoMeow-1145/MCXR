@@ -26,7 +26,8 @@ public class QuickChat extends ChatScreen {
 
         super.init();
 
-        Minecraft.getInstance().gui.getChat().clearMessages(true);
+        //I like to read the chat history
+        //Minecraft.getInstance().gui.getChat().clearMessages(true);
 
         String[] quickChat;
         BufferedReader reader = null;
@@ -71,7 +72,7 @@ public class QuickChat extends ChatScreen {
         for (int i = 0, j = 0, k = 0; i < quickChat.length; i++) {
             String word = quickChat[i];
             int buttonX = 170 * j;
-            int buttonY = 25 * k + 10;
+            int buttonY = 23 * k + 10;
             int buttonWidth = 8 * word.length();
             int buttonHeight = 20;
 

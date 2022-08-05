@@ -118,41 +118,24 @@ public class MCXROptionsScreen extends Screen {
                 this.height / 6 + 54 + 24 + 12,
                 150,
                 20,
-                PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"),
+                PlayOptions.smoothTurning ? Component.translatable("mcxr.options.smooth_turning") : Component.translatable("mcxr.options.snap_turning"),
                 button -> {
                     PlayOptions.smoothTurning = !PlayOptions.smoothTurning;
                     PlayOptions.save();
-                    button.setMessage(PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"));
+                    button.setMessage(PlayOptions.smoothTurning ? Component.translatable("mcxr.options.smooth_turning") : Component.translatable("mcxr.options.snap_turning"));
                 }));
-
 
         this.addRenderableWidget(new Button(
                 this.width / 2 - 155 + 160,
-                this.height / 6 + 54 + 24 + 12,
+                this.height / 6 + 54 + 24 * 2 + 12,
                 150,
                 20,
-                PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"),
+                PlayOptions.teleportEnabled ? Component.translatable("mcxr.options.teleportEnabled") : Component.translatable("mcxr.options.teleportDisabled"),
                 button -> {
-                    PlayOptions.smoothTurning = !PlayOptions.smoothTurning;
+                    PlayOptions.teleportEnabled = !PlayOptions.teleportEnabled;
                     PlayOptions.save();
-                    button.setMessage(PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"));
+                    button.setMessage(PlayOptions.teleportEnabled ? Component.translatable("mcxr.options.teleportEnabled") : Component.translatable("mcxr.options.teleportDisabled"));
                 }));
-
-        if (true ||
-                MCXRPlayClient.MCXR_GAME_RENDERER.isXrMode() &&
-                (XrInput.vanillaGameplayActionSet.indexTrackpadRight.isActive || XrInput.vanillaGameplayActionSet.indexTrackpadLeft.isActive)) {
-            this.addRenderableWidget(new Button(
-                    this.width / 2 - 155 + 160,
-                    this.height / 6 + 54 + 24 * 2 + 12,
-                    150,
-                    20,
-                    Component.translatable("mcxr.options.index_touchpad", PlayOptions.indexTouchpadState.toComponent()),
-                    button -> {
-                        PlayOptions.indexTouchpadState = PlayOptions.indexTouchpadState.iterate();
-                        PlayOptions.save();
-                        button.setMessage(Component.translatable("mcxr.options.index_touchpad", PlayOptions.indexTouchpadState.toComponent()));
-                    }));
-        }
 
         this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 168, 200, 20, CommonComponents.GUI_DONE, button -> this.minecraft.setScreen(this.previous)));
     }

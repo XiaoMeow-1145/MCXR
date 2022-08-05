@@ -3,6 +3,7 @@ package net.sorenon.mcxr.play.mixin.rendering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Gui.class)
-public class InGameHudMixin {
+public class GuiMixin {
 
     @Unique
     private static final MCXRGameRenderer XR_RENDERER = MCXRPlayClient.MCXR_GAME_RENDERER;
@@ -32,9 +33,28 @@ public class InGameHudMixin {
     }
 
     @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
-    void cancelRenderCrosshair(PoseStack matrices, CallbackInfo ci){
+    void cancelRenderCrosshair(PoseStack matrices, CallbackInfo ci) {
         if (XR_RENDERER.renderPass != RenderPass.VANILLA) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "renderPortalOverlay", at = @At("HEAD"), cancellable = true)
+    void cancelRenderPortal(float nauseaStrength, CallbackInfo ci) {
+        if (XR_RENDERER.renderPass != RenderPass.VANILLA) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderTextureOverlay", at = @At("HEAD"), cancellable = true)
+    void cancelRenderTex(ResourceLocation texture, float opacity, CallbackInfo ci) {
+        if (XR_RENDERER.renderPass != RenderPass.VANILLA) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    void irisGuiFix(CallbackInfo ci) {
+        RenderSystem.enableDepthTest();
     }
 }

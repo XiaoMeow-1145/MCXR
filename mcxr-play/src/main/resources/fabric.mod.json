@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": "mcxr-play",
   "version": "${play_version}",
-  "name": "[MCXR] Play",
-  "description": "VR!",
+  "name": "[MCXR] Play - experimental",
+  "description": "VR! - experimental. Feedback welcome!",
   "authors": [
-    "Sorenon"
+    "Sorenon", "xanion"
   ],
   "contact": {
-    "homepage": "https://github.com/Sorenon/MCXR",
-    "sources": "https://github.com/Sorenon/MCXR",
-    "issues": "https://github.com/Sorenon/MCXR/issues"
+    "homepage": "https://github.com/xanthousm/MCXR",
+    "sources": "https://github.com/xanthousm/MCXR",
+    "issues": "https://github.com/xanthousm/MCXR/issues"
   },
   "custom": {
     "modmenu": {
@@ -28,8 +28,7 @@
     ]
   },
   "mixins": [
-    "mcxr-play.mixins.json",
-    "mcxr-play.compat.iris.mixins.json"
+    "mcxr-play.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.6",
@@ -37,5 +36,6 @@
     "minecraft": "1.19.x",
     "mcxr-core": ">=${core_version}",
     "java": ">=17"
-  }
+  },
+  "accessWidener": "mcxr-play.accesswidener"
 }
