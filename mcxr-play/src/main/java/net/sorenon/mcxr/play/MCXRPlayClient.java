@@ -1,7 +1,5 @@
 package net.sorenon.mcxr.play;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.ClientModInitializer;
@@ -9,6 +7,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Camera;
+import net.sorenon.mcxr.play.openxr.OpenXRState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -19,11 +18,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.HumanoidArm;
+import net.sorenon.fart.FartRenderEvents;
 import net.sorenon.mcxr.core.MCXRCore;
 import net.sorenon.mcxr.core.MCXRScale;
 import net.sorenon.mcxr.play.input.ControllerPoses;
 import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
-import net.sorenon.mcxr.play.openxr.OpenXRState;
 import net.sorenon.mcxr.play.rendering.RenderPass;
 import net.sorenon.mcxr.play.rendering.VrFirstPersonRenderer;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +39,6 @@ import static net.minecraft.client.gui.GuiComponent.GUI_ICONS_LOCATION;
 public class MCXRPlayClient implements ClientModInitializer {
 
     public static Logger LOGGER = LogManager.getLogger("MCXR");
-    public static final String MODID = "mcxr-play";
 
     public static final OpenXRState OPEN_XR_STATE = new OpenXRState();
     public static final MCXRGameRenderer MCXR_GAME_RENDERER = new MCXRGameRenderer();
@@ -95,7 +93,6 @@ public class MCXRPlayClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Configuration.OPENXR_EXPLICIT_INIT.set(true);
         PlayOptions.init();
         PlayOptions.load();
         PlayOptions.save();
@@ -116,7 +113,7 @@ public class MCXRPlayClient implements ClientModInitializer {
 
                     var hitResult = Minecraft.getInstance().hitResult;
                     if (hitResult != null && !this.MCXRGuiManager.isScreenOpen()) {
-                        Vec3 camPos = context.camera().getPosition();
+                        Vec3 camPos = camera.getPosition();
                         matrices.pushPose();
 
                         double x = hitResult.getLocation().x();
@@ -131,17 +128,16 @@ public class MCXRPlayClient implements ClientModInitializer {
                             matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90.0F));
                         }
 
-                        //cursor render part 2 (underwater) - also in VrFirstPersonRenderer.java
                         matrices.scale(0.5f, 1, 0.5f);
-                        RenderType SHADOW_LAYER = RenderType.entityCutoutNoCull(GUI_ICONS_LOCATION);
-                        VertexConsumer vertexConsumer = context.consumers().getBuffer(SHADOW_LAYER);
+                        RenderType cursorLayer = RenderType.entityCutoutNoCull(GUI_ICONS_LOCATION);
+                        VertexConsumer vertexConsumer = context.consumers().getBuffer(cursorLayer);
 
                         PoseStack.Pose entry = matrices.last();
 
-                        vertexConsumer.vertex(entry.pose(), -0.3f + (0.5f / 16f), 0.005f, -0.3f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
-                        vertexConsumer.vertex(entry.pose(), -0.3f + (0.5f / 16f), 0.005f, 0.3f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0, 0.0625f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
-                        vertexConsumer.vertex(entry.pose(), 0.3f + (0.5f / 16f), 0.005f, 0.3f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0.0625f, 0.0625f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
-                        vertexConsumer.vertex(entry.pose(), 0.3f + (0.5f / 16f), 0.005f, -0.3f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0.0625f, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
+                        vertexConsumer.vertex(entry.pose(), -0.5f + (0.5f / 16f), 0.005f, -0.5f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
+                        vertexConsumer.vertex(entry.pose(), -0.5f + (0.5f / 16f), 0.005f, 0.5f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0, 0.0625f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
+                        vertexConsumer.vertex(entry.pose(), 0.5f + (0.5f / 16f), 0.005f, 0.5f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0.0625f, 0.0625f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
+                        vertexConsumer.vertex(entry.pose(), 0.5f + (0.5f / 16f), 0.005f, -0.5f + (0.5f / 16f)).color(1.0F, 1.0F, 1.0F, 1.0f).uv(0.0625f, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(0.0F, 0.0F, 1.0F).endVertex();
 
                         matrices.popPose();
                     }
@@ -159,24 +155,15 @@ public class MCXRPlayClient implements ClientModInitializer {
             }
         });
 
-        WorldRenderEvents.LAST.register(context -> {
+        FartRenderEvents.LAST.register(context -> {
             if (MCXR_GAME_RENDERER.renderPass instanceof RenderPass.XrWorld) {
-                var poseStack = RenderSystem.getModelViewStack();
-                poseStack.pushPose();
-                poseStack.setIdentity();
-                RenderSystem.applyModelViewMatrix();
-                GlStateManager._disableDepthTest();
-
                 vrFirstPersonRenderer.renderLast(context);
-
-                poseStack.popPose();
-                RenderSystem.applyModelViewMatrix();
             }
         });
     }
 
     public static ResourceLocation id(String name) {
-        return new ResourceLocation(MODID, name);
+        return new ResourceLocation("mcxr-play", name);
     }
 
     public static void resetView() {

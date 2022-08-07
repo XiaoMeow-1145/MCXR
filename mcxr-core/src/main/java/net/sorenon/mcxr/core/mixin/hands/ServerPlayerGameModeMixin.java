@@ -23,7 +23,7 @@ public class ServerPlayerGameModeMixin {
                 InteractionHand interactionHand,
                 CallbackInfoReturnable<InteractionResult> cir) {
         PlayerExt playerExt = ((PlayerExt) serverPlayer);
-        if (playerExt.isXR() && MCXRCore.getCoreConfig().handBasedItemUsage()) {
+        if (playerExt.isXR()) {
             playerExt.getOverrideTransform().set(MCXRCore.handToArm(serverPlayer, interactionHand));
         }
     }

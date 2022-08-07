@@ -10,14 +10,11 @@ base {
     archivesBaseName = "mcxr-core"
 }
 
-version = "${properties["core_version"].toString()}+mc${properties["minecraft_version"].toString()}"
+version = "${properties["core_version"].toString()}+${properties["minecraft_version"].toString()}"
 group = properties["maven_group"].toString()
 
 repositories {
-    maven {
-        name = "Jitpack"
-        url = uri("https://jitpack.io")
-    }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -30,7 +27,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"].toString()}")
 
-    modImplementation("com.github.Virtuoel:Pehkui:${properties["pehkui_version"].toString()}") {
+    modCompileOnly("com.github.Virtuoel:Pehkui:${properties["pehkui_version"].toString()}") {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
@@ -99,4 +96,24 @@ loom {
             ideConfigGenerated(true)
         }
     }
+}
+
+fun getVersionMetadata(): String {
+    val buildId = System.getenv("GITHUB_RUN_NUMBER")
+
+    // CI builds only
+    if (buildId != null) {
+        return "build.${buildId}"
+    }
+
+    val grgit = extensions.getByName("grgit") as org.ajoberstar.grgit.Grgit;
+    val head = grgit.head()
+    var id = head.abbreviatedId
+
+    // Flag the build if the build tree is not clean
+    if (!grgit.status().isClean) {
+        id += "-dirty"
+    }
+
+    return "rev.${id}"
 }

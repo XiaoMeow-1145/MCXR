@@ -27,8 +27,6 @@ public class MCXROptionsScreen extends Screen {
     @Nullable
     private final Screen previous;
 
-    private Button reloadButton;
-
     public MCXROptionsScreen(@Nullable Screen previous) {
         super(Component.translatable("mcxr.options.title"));
         this.previous = previous;
@@ -37,44 +35,6 @@ public class MCXROptionsScreen extends Screen {
     @Override
     protected void init() {
         PlayOptions.load();
-        this.reloadButton = this.addRenderableWidget(new Button(
-                this.width / 2 - 155,
-                this.height / 6 - 12 - 4 + 24,
-                150,
-                20,
-                Component.translatable("mcxr.menu.reload"),
-                button -> MCXRPlayClient.OPEN_XR_STATE.tryInitialize()));
-        if (PlayOptions.xrUninitialized) {
-            reloadButton.active = false;
-        }
-
-        this.addRenderableWidget(new Button(
-                this.width / 2 + 5,
-                this.height / 6 - 12 - 4 + 24,
-                150,
-                20,
-                PlayOptions.xrUninitialized ? Component.translatable("mcxr.options.initialize") : Component.translatable("mcxr.options.uninitialize"),
-                button -> {
-                    PlayOptions.xrUninitialized = !PlayOptions.xrUninitialized;
-                    PlayOptions.save();
-                    reloadButton.active = !PlayOptions.xrUninitialized;
-                    if (!PlayOptions.xrUninitialized) {
-                        MCXRPlayClient.OPEN_XR_STATE.tryInitialize();
-                    }
-                    button.setMessage(PlayOptions.xrUninitialized ? Component.translatable("mcxr.options.initialize") : Component.translatable("mcxr.options.uninitialize"));
-                }));
-
-        this.addRenderableWidget(new Button(
-                this.width / 2 - 100,
-                this.height / 6 - 12 - 4,
-                200,
-                20,
-                PlayOptions.xrPaused ? Component.translatable("mcxr.options.unpause") : Component.translatable("mcxr.options.pause"),
-                button -> {
-                    PlayOptions.xrPaused = !PlayOptions.xrPaused;
-                    PlayOptions.save();
-                    button.setMessage(PlayOptions.xrPaused ? Component.translatable("mcxr.options.unpause") : Component.translatable("mcxr.options.pause"));
-                }));
 
         this.addRenderableWidget(new Button(
                 this.width / 2 - 155,
@@ -98,6 +58,7 @@ public class MCXROptionsScreen extends Screen {
                     PlayOptions.save();
                     button.setMessage(Component.translatable("mcxr.options.swim_direction", PlayOptions.swimDirection.toComponent()));
                 }));
+
         this.addRenderableWidget(new Button(
                 this.width / 2 - 155,
                 this.height / 6 + 54 + 24 * 2 + 12,
@@ -115,10 +76,10 @@ public class MCXROptionsScreen extends Screen {
                 this.height / 6 + 54 + 24 * 3 + 12,
                 150,
                 20,
-                MCXRPlayClient.heightAdjustStand ? Component.translatable("mcxr.options.height_vanilla") : Component.translatable("mcxr.options.height_real"),
+                MCXRPlayClient.heightAdjustStand ? Component.translatable("mcxr.options.unlock_playerheight") : Component.translatable("mcxr.options.lock_playerheight"),
                 button -> {
                     MCXRPlayClient.heightAdjustStand = !MCXRPlayClient.heightAdjustStand;
-                    button.setMessage(MCXRPlayClient.heightAdjustStand ? Component.translatable("mcxr.options.height_vanilla") : Component.translatable("mcxr.options.height_real"));
+                    button.setMessage(MCXRPlayClient.heightAdjustStand ? Component.translatable("mcxr.options.unlock_playerheight") : Component.translatable("mcxr.options.lock_playerheight"));
                 }));
 
         assert this.minecraft != null;
@@ -129,36 +90,24 @@ public class MCXROptionsScreen extends Screen {
                 this.height / 6 + 54 + 24 + 12,
                 150,
                 20,
-                PlayOptions.smoothTurning ? Component.translatable("mcxr.options.smooth_turning") : Component.translatable("mcxr.options.snap_turning"),
+                PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"),
                 button -> {
                     PlayOptions.smoothTurning = !PlayOptions.smoothTurning;
                     PlayOptions.save();
-                    button.setMessage(PlayOptions.smoothTurning ? Component.translatable("mcxr.options.smooth_turning") : Component.translatable("mcxr.options.snap_turning"));
+                    button.setMessage(PlayOptions.smoothTurning ? Component.translatable("mcxr.options.enable_snap_turning") : Component.translatable("mcxr.options.enable_smooth_turning"));
                 }));
 
         this.addRenderableWidget(new Button(
-                this.width / 2 - 155 + 160,
-                this.height / 6 + 54 + 24 * 2 + 12,
-                150,
-                20,
-                PlayOptions.immersiveControls ? Component.translatable("mcxr.options.immersive_on") : Component.translatable("mcxr.options.immersive_off"),
-                button -> {
-                    PlayOptions.immersiveControls = !PlayOptions.immersiveControls;
-                    PlayOptions.save();
-                    button.setMessage(PlayOptions.immersiveControls ? Component.translatable("mcxr.options.immersive_on") : Component.translatable("mcxr.options.immersive_off"));
-                }));
-
-        this.addRenderableWidget(new Button(
-                this.width / 2 - 155 + 160,
-                this.height / 6 + 54 + 24 * 3 + 12,
-                150,
-                20,
-                PlayOptions.teleportEnabled ? Component.translatable("mcxr.options.teleportEnabled") : Component.translatable("mcxr.options.teleportDisabled"),
-                button -> {
-                    PlayOptions.teleportEnabled = !PlayOptions.teleportEnabled;
-                    PlayOptions.save();
-                    button.setMessage(PlayOptions.teleportEnabled ? Component.translatable("mcxr.options.teleportEnabled") : Component.translatable("mcxr.options.teleportDisabled"));
-                }));
+                    this.width / 2 - 155 + 160,
+                    this.height / 6 + 54 + 24 * 2 + 12,
+                    150,
+                    20,
+                    PlayOptions.immersiveControls ? Component.translatable("mcxr.options_disable_immersive_controls") : Component.translatable("mcxr.options_enable_immersive_controls"),
+                    button -> {
+                        PlayOptions.immersiveControls = !PlayOptions.immersiveControls;
+                        PlayOptions.save();
+                        button.setMessage(PlayOptions.immersiveControls ? Component.translatable("mcxr.options_disable_immersive_controls") : Component.translatable("mcxr.options_enable_immersive_controls"));
+                    }));
 
         this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 168, 200, 20, CommonComponents.GUI_DONE, button -> this.minecraft.setScreen(this.previous)));
     }

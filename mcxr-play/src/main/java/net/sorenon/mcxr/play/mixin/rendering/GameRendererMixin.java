@@ -5,15 +5,18 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.sorenon.mcxr.play.MCXRPlayClient;
-import net.sorenon.mcxr.play.accessor.Matrix4fExt;
 import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
+import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
 import net.sorenon.mcxr.play.rendering.MCXRCamera;
 import net.sorenon.mcxr.play.rendering.RenderPass;
+import net.sorenon.mcxr.play.accessor.Matrix4fExt;
 import org.joml.Quaternionf;
 import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,6 +36,10 @@ public abstract class GameRendererMixin {
     public abstract float getRenderDistance();
 
     @Shadow
+    @Final
+    private Minecraft minecraft;
+
+    @Shadow
     private boolean renderHand;
 
     /**
@@ -43,34 +50,29 @@ public abstract class GameRendererMixin {
         return new MCXRCamera();
     }
 
+    /**
+     * Update the framebuffer dimensions in MCXRMainTarget so we know if framebuffers need resizing
+     */
     @Inject(method = "resize", at = @At("HEAD"))
     void onResized(int i, int j, CallbackInfo ci) {
-        XR_RENDERER.reloadingDepth += 1;
+        MCXRMainTarget MCXRMainTarget = (MCXRMainTarget) minecraft.getMainRenderTarget();
+        MCXRMainTarget.minecraftFramebufferWidth = i;
+        MCXRMainTarget.minecraftFramebufferHeight = j;
     }
 
-    @Inject(method = "resize", at = @At("RETURN"))
-    void afterResized(int i, int j, CallbackInfo ci) {
-        XR_RENDERER.reloadingDepth -= 1;
-    }
-
-    @Unique
-    private boolean renderHandOld;
-
-    /**
-     * Cancels both vanilla and Iris hand rendering
-     * Note: If immersive portals is installed this can interfear
-     */
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    void cancelRenderHand(CallbackInfo ci) {
-        this.renderHandOld = this.renderHand;
-        if (XR_RENDERER.renderPass != RenderPass.VANILLA) {
-            this.renderHand = false;
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    void cancelVanillaRendering(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
+        if(XR_RENDERER.renderPass == RenderPass.VANILLA && !(Minecraft.getInstance().screen instanceof TitleScreen)) {
+            ci.cancel();
         }
     }
 
-    @Inject(method = "renderLevel", at = @At("RETURN"))
-    void restoreRenderHand(CallbackInfo ci) {
-        this.renderHand = this.renderHandOld;
+    /**
+     * Cancels both vanilla and Iris hand rendering. Also cancels ScreenEffectRenderer call.
+     */
+    @Inject(method = "renderLevel", at = @At("HEAD"))
+    void cancelRenderHand(CallbackInfo ci) {
+        this.renderHand = XR_RENDERER.renderPass == RenderPass.VANILLA;
     }
 
     @Inject(method = "renderConfusionOverlay", at = @At("HEAD"), cancellable = true)

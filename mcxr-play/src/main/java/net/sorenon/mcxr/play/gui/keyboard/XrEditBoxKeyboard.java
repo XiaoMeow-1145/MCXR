@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.DirectJoinServerScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;

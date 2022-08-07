@@ -1,8 +1,3 @@
-gradle.properties
-mcxr-core/build.gradle.kts
-mcxr-play/build.gradle.kts
-settings.gradle.kts
-
 # gradle
 
 .gradle/
@@ -36,4 +31,3 @@ bin/
 # fabric
 
 run/
-.github/workflows/publish.yml

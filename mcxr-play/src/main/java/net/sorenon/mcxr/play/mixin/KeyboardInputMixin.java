@@ -5,6 +5,7 @@ import net.minecraft.client.player.Input;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.sorenon.mcxr.play.MCXRPlayClient;
+import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.input.XrInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,6 +21,7 @@ public class KeyboardInputMixin extends Input {
         if (MCXRPlayClient.INSTANCE.MCXRGuiManager.isScreenOpen()) return;
 
         var move = XrInput.vanillaGameplayActionSet.move.currentState;
+
         this.forwardImpulse = move.y();
         this.leftImpulse = -move.x();
 
@@ -36,7 +38,7 @@ public class KeyboardInputMixin extends Input {
         }
 
         this.jumping |= XrInput.vanillaGameplayActionSet.jump.currentState;
-        
+
         if(slowDown) {
             this.forwardImpulse *= f;
             this.leftImpulse *= f;

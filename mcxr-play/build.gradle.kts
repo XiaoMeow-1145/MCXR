@@ -9,21 +9,20 @@ plugins {
 base {
     archivesBaseName = "mcxr-play"
 }
-
-version = "${properties["play_version"].toString()}+mc${properties["minecraft_version"].toString()}"
+version = "${properties["play_version"].toString()}+${properties["minecraft_version"].toString()}"
 group = properties["maven_group"].toString()
 
 repositories {
-    maven {
-        name = "Jitpack"
-        url = uri("https://jitpack.io")
-    }
+    maven { url = uri("https://jitpack.io") }
     maven {
         name = "Modrinth"
         url = uri("https://api.modrinth.com/maven")
         content {
             includeGroup("maven.modrinth")
         }
+    }
+    flatDir {
+        dirs("libs")
     }
 }
 
@@ -39,20 +38,21 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"].toString()}")
 
-    // modImplementation("maven.modrinth:simple-voice-chat:fabric-1.18.2-2.2.26")
+    modImplementation("maven.modrinth:simple-voice-chat:fabric-1.18.2-2.2.26")
 
     modCompileOnly("com.github.Virtuoel:Pehkui:${properties["pehkui_version"].toString()}") {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
-    include(implementation("org.lwjgl:lwjgl-openxr:3.3.1")!!)
+    modCompileOnly("maven.modrinth:simple-voice-chat:fabric-1.19-2.2.45")
+
+    implementation("blank:lwjgl:3.2.3")
+    implementation("blank:lwjgl-glfw:3.2.3")
+
     implementation("org.joml:joml:${properties["joml_version"].toString()}")
     implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")
     implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")
-}
-
-loom {
-    accessWidenerPath.set(file("src/main/resources/mcxr-play.accesswidener"))
+    include(modImplementation("com.github.thejudge156:fart:ca52671672")!!)
 }
 
 sourceSets {
@@ -117,4 +117,24 @@ loom {
             ideConfigGenerated(true)
         }
     }
+}
+
+fun getVersionMetadata(): String {
+    val buildId = System.getenv("GITHUB_RUN_NUMBER")
+
+    // CI builds only
+    if (buildId != null) {
+        return "build.${buildId}"
+    }
+
+    val grgit = extensions.getByName("grgit") as org.ajoberstar.grgit.Grgit;
+    val head = grgit.head()
+    var id = head.abbreviatedId
+
+    // Flag the build if the build tree is not clean
+    if (!grgit.status().isClean) {
+        id += "-dirty"
+    }
+
+    return "rev.${id}"
 }

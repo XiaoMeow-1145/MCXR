@@ -23,8 +23,6 @@ public abstract class EntityMixin {
     @Shadow
     public abstract float getEyeHeight();
 
-    @Shadow private Vec3 position;
-
     @Inject(method = "getEyeY", at = @At("HEAD"), cancellable = true)
     void overrideEyeY(CallbackInfoReturnable<Double> cir) {
         if (this instanceof PlayerExt playerExt && playerExt.getOverrideTransform().get() != null) {
@@ -42,7 +40,7 @@ public abstract class EntityMixin {
     @Inject(method = "position", at = @At("HEAD"), cancellable = true)
     void overridePosition(CallbackInfoReturnable<Vec3> cir) {
         if (this instanceof PlayerExt playerExt && playerExt.getOverrideTransform().get() != null) {
-            cir.setReturnValue(JOMLUtil.convert(playerExt.getPoseForArm(playerExt.getOverrideTransform().get()).getPos()).add(this.position));
+            cir.setReturnValue(JOMLUtil.convert(playerExt.getPoseForArm(playerExt.getOverrideTransform().get()).getPos()));
         }
     }
 

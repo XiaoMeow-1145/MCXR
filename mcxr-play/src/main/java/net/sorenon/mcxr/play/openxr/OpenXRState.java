@@ -1,5 +1,7 @@
 package net.sorenon.mcxr.play.openxr;
 
+import net.sorenon.mcxr.play.MCXRNativeLoad;
+import net.minecraft.client.Minecraft;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.input.XrInput;
@@ -26,8 +28,8 @@ public class OpenXRState {
 
     public static Logger LOGGER = LogManager.getLogger("MCXR");
 
-    public static final XrPosef POSE_IDENTITY = XrPosef.calloc().set(
-            XrQuaternionf.calloc().set(0, 0, 0, 1),
+    public static final XrPosef POSE_IDENTITY = XrPosef.malloc().set(
+            XrQuaternionf.malloc().set(0, 0, 0, 1),
             XrVector3f.calloc()
     );
 
@@ -61,9 +63,8 @@ public class OpenXRState {
         if (PlayOptions.xrUninitialized) {
             return;
         }
-        try {
-            XR.getFunctionProvider();
-        } catch(IllegalStateException exception) {
+
+        if (!XR.loaded()) {
             XR.create("openxr_loader");
         }
 
@@ -93,7 +94,7 @@ public class OpenXRState {
 
     public OpenXRInstance createOpenXRInstance() throws XrException {
         try (MemoryStack stack = stackPush()) {
-            IntBuffer numExtensions = stack.callocInt(1);
+            IntBuffer numExtensions = stack.mallocInt(1);
             checkPanic(XR10.xrEnumerateInstanceExtensionProperties((ByteBuffer) null, numExtensions, null));
 
             XrExtensionProperties.Buffer properties = new XrExtensionProperties.Buffer(
@@ -103,42 +104,47 @@ public class OpenXRState {
             checkPanic(XR10.xrEnumerateInstanceExtensionProperties((ByteBuffer) null, numExtensions, properties));
 
             boolean missingOpenGL = true;
-            PointerBuffer extensions = stackCallocPointer(3);
+            PointerBuffer extensions = stackCallocPointer(2);
             while (properties.hasRemaining()) {
                 XrExtensionProperties prop = properties.get();
                 String extensionName = prop.extensionNameString();
-                if (extensionName.equals(KHROpenGLEnable.XR_KHR_OPENGL_ENABLE_EXTENSION_NAME)) {
+                if (extensionName.equals(KHROpenglEsEnable.XR_KHR_OPENGL_ES_ENABLE_EXTENSION_NAME)) {
                     missingOpenGL = false;
-                    extensions.put(memAddress(stackUTF8(KHROpenGLEnable.XR_KHR_OPENGL_ENABLE_EXTENSION_NAME)));
+                    extensions.put(memAddress(stackUTF8(KHROpenglEsEnable.XR_KHR_OPENGL_ES_ENABLE_EXTENSION_NAME)));
                 }
-                if (extensionName.equals(EXTHPMixedRealityController.XR_EXT_HP_MIXED_REALITY_CONTROLLER_EXTENSION_NAME)) {
-                    extensions.put(memAddress(stackUTF8(EXTHPMixedRealityController.XR_EXT_HP_MIXED_REALITY_CONTROLLER_EXTENSION_NAME)));
-                }
-                if (extensionName.equals(HTCViveCosmosControllerInteraction.XR_HTC_VIVE_COSMOS_CONTROLLER_INTERACTION_EXTENSION_NAME)) {
-                    extensions.put(memAddress(stackUTF8(HTCViveCosmosControllerInteraction.XR_HTC_VIVE_COSMOS_CONTROLLER_INTERACTION_EXTENSION_NAME)));
+                if (extensionName.equals(KHRAndroidCreateInstance.XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME)) {
+                    extensions.put(memAddress(stackUTF8(KHRAndroidCreateInstance.XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME)));
                 }
             }
 
             if (missingOpenGL) {
-                throw new XrException(0, "OpenXR runtime does not support OpenGL, try using SteamVR instead");
+                throw new XrException(0, "OpenXR runtime does not support OpenGLES, try using Quest instead");
             }
 
-            XrApplicationInfo applicationInfo = XrApplicationInfo.calloc(stack);
+            XrApplicationInfo applicationInfo = XrApplicationInfo.malloc(stack);
             applicationInfo.apiVersion(XR10.XR_CURRENT_API_VERSION);
             applicationInfo.applicationName(stack.UTF8("[MCXR] Minecraft VR"));
             applicationInfo.applicationVersion(1);
 
-            XrInstanceCreateInfo createInfo = XrInstanceCreateInfo.calloc(stack);
+            XrInstanceCreateInfoAndroidKHR androidCreateInfo = XrInstanceCreateInfoAndroidKHR.malloc(stack);
+            androidCreateInfo.set(
+                    KHRAndroidCreateInstance.XR_TYPE_INSTANCE_CREATE_INFO_ANDROID_KHR,
+                    NULL,
+                    memGetAddress(MCXRNativeLoad.getJVMPtr()),
+                    memGetAddress(MCXRNativeLoad.getApplicationActivityPtr())
+            );
+
+            XrInstanceCreateInfo createInfo = XrInstanceCreateInfo.malloc(stack);
             createInfo.set(
                     XR10.XR_TYPE_INSTANCE_CREATE_INFO,
-                    0,
+                    androidCreateInfo.address(),
                     0,
                     applicationInfo,
                     null,
                     extensions.flip()
             );
 
-            PointerBuffer instancePtr = stack.callocPointer(1);
+            PointerBuffer instancePtr = stack.mallocPointer(1);
 
             int xrResult = XR10.xrCreateInstance(createInfo, instancePtr);
             if (xrResult == XR10.XR_ERROR_RUNTIME_FAILURE) {
@@ -163,6 +169,7 @@ public class OpenXRState {
             MCXRPlayClient.MCXR_GAME_RENDERER.setSession(null);
             if (instance != null) instance.close();
             instance = null;
+            Minecraft.getInstance().close();
         }
 
         if (session == null) {
@@ -186,7 +193,7 @@ public class OpenXRState {
         if (result >= 0) return;
 
         if (instance != null) {
-            ByteBuffer str = stackCalloc(XR10.XR_MAX_RESULT_STRING_SIZE);
+            ByteBuffer str = stackMalloc(XR10.XR_MAX_RESULT_STRING_SIZE);
             if (XR10.xrResultToString(instance.handle, result, str) >= 0) {
                 throw new XrRuntimeException(result, memUTF8Safe(str));
             }

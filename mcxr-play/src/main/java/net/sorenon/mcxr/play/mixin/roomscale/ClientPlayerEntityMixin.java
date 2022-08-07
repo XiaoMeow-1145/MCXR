@@ -3,7 +3,6 @@ package net.sorenon.mcxr.play.mixin.roomscale;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -18,7 +17,6 @@ import net.minecraft.world.phys.Vec3;
 import net.sorenon.mcxr.core.MCXRCore;
 import net.sorenon.mcxr.core.MCXRScale;
 import net.sorenon.mcxr.play.MCXRPlayClient;
-import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.gui.XrSignEditScreen;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
@@ -112,10 +110,7 @@ public abstract class ClientPlayerEntityMixin extends Player {
 
     @Redirect(method="openTextEdit", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreen(Lnet/minecraft/client/gui/screens/Screen;)V"))
     public void openSignScreen(Minecraft instance, Screen screen, SignBlockEntity sign) {
-        if (!PlayOptions.xrUninitialized)
-            instance.setScreen(new XrSignEditScreen(Component.translatable("Sign"), sign));
-        else
-            instance.setScreen(new SignEditScreen(sign, instance.isTextFilteringEnabled()));
+        instance.setScreen(new XrSignEditScreen(Component.translatable("Sign"), sign));
     }
 
 }

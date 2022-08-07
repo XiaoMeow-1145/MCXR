@@ -30,17 +30,10 @@ public class ChatScreenMixin extends Screen {
     @Inject(at=@At("TAIL"), method = "init")
     public void initChat(CallbackInfo ci) {
 
-        if (initial == "QuickChat") {
-            return;
-        }
-        if (initial == "QuickMenu") {
-            this.input.setValue("");
-            return;
-        }
-
         //reduce number of command suggestions to not overlap keyboard
         this.commandSuggestions = new CommandSuggestions(this.minecraft, this, this.input, this.font, false, false, 1, 5, true, -805306368);
         this.commandSuggestions.updateCommandInfo();
 
     }
+
 }
