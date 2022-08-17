@@ -671,47 +671,6 @@ public final class XrInput {
         }
     }
 
-    public static void applyHaptics(long duration, float amplitude, float frequency) {
-        applyHapticsLeft(duration, amplitude, frequency);
-        applyHapticsRight(duration, amplitude, frequency);
-    }
-
-    public static void applyHapticsRight(long duration, float amplitude, float frequency) {
-        try(var stack = stackPush()) {
-            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
-                    XR10.XR_TYPE_HAPTIC_VIBRATION,
-                    NULL,
-                    duration,
-                    frequency,
-                    amplitude
-            );
-
-            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
-            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
-            hapticActionInfo.action(vanillaGameplayActionSet.rightHaptic.getHandle());
-
-            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
-        }
-    }
-
-    public static void applyHapticsLeft(long duration, float amplitude, float frequency) {
-        try(var stack = stackPush()) {
-            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
-                    XR10.XR_TYPE_HAPTIC_VIBRATION,
-                    NULL,
-                    duration,
-                    frequency,
-                    amplitude
-            );
-
-            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
-            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
-            hapticActionInfo.action(vanillaGameplayActionSet.leftHaptic.getHandle());
-
-            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
-        }
-    }
-
     public static void setNewHit(HitResult hit) {
         newHit=hit;
     }
