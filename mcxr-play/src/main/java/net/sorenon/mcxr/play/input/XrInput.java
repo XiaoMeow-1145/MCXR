@@ -590,6 +590,84 @@ public final class XrInput {
                     Minecraft.getInstance().pauseGame(false);
                 }
             }
+
+            //==immersive control test
+            if(PlayOptions.immersiveControls){
+                var hitResult = Minecraft.getInstance().hitResult;
+                Pose handPoint = handsActionSet.aimPoses[MCXRPlayClient.getMainHand()].getMinecraftPose();
+                Vec3 handPos = convert(handPoint.getPos());
+                if(motionPoints>11) {
+                    if (hitResult != null) {
+                        double dist = handPos.distanceTo(hitResult.getLocation());
+                        if (hitResult.getType() == HitResult.Type.BLOCK && dist < 0.4) {
+                            mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
+                                    GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_PRESS, 0);
+                        } else if (hitResult.getType() == HitResult.Type.ENTITY && dist < 4) {
+                            mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
+                                    GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_PRESS, 0);
+                            motionPoints = 0;
+                        }
+
+                        if(MCXRPlayClient.getMainHand() == 1) {
+                            applyHapticsRight(300, 1f, XR10.XR_FREQUENCY_UNSPECIFIED);
+                        } else {
+                            applyHapticsLeft(300, 1f, XR10.XR_FREQUENCY_UNSPECIFIED);
+                        }
+                    } //else if (hitResult.getType() !=HitResult.Type.MISS && !lastHit.equals(hitResult)){//let go if hitting new block/entity
+                    // mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
+                    //GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_RELEASE, 0);
+                    //lastHit=null;
+                    //motionPoints=0;
+                    //}
+                } else if(motionPoints < 1) {//let go when no more motionPoints
+                    if(!actionSet.attack.currentState) {//only if not pressing attack
+                        mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
+                                GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_RELEASE, 0);
+                        lastHit=null;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void applyHaptics(long duration, float amplitude, float frequency) {
+        applyHapticsLeft(duration, amplitude, frequency);
+        applyHapticsRight(duration, amplitude, frequency);
+    }
+
+    public static void applyHapticsRight(long duration, float amplitude, float frequency) {
+        try(var stack = stackPush()) {
+            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
+                    XR10.XR_TYPE_HAPTIC_VIBRATION,
+                    NULL,
+                    duration,
+                    frequency,
+                    amplitude
+            );
+
+            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
+            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
+            hapticActionInfo.action(vanillaGameplayActionSet.rightHaptic.getHandle());
+
+            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
+        }
+    }
+
+    public static void applyHapticsLeft(long duration, float amplitude, float frequency) {
+        try(var stack = stackPush()) {
+            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
+                    XR10.XR_TYPE_HAPTIC_VIBRATION,
+                    NULL,
+                    duration,
+                    frequency,
+                    amplitude
+            );
+
+            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
+            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
+            hapticActionInfo.action(vanillaGameplayActionSet.leftHaptic.getHandle());
+
+            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
         }
     }
 
