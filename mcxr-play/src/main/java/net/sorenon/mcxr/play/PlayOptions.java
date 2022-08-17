@@ -21,7 +21,9 @@ public class PlayOptions {
     public static boolean smoothTurning = false;
     public static float snapTurnAmount = 22f;
     public static float smoothTurnRate = 120f;
+    public static boolean snapTurnSound = true;
     public static boolean immersiveControls = true;
+    public static float immersiveAttackMinSpeed = 1.7f;
     public static boolean teleportEnabled = false;
 
     public static boolean fullMirror = false;
@@ -51,7 +53,9 @@ public class PlayOptions {
         fileConfig.set("snapTurnAmount", snapTurnAmount);
         fileConfig.set("smoothTurnRate", smoothTurnRate);
         fileConfig.set("teleportEnabled", teleportEnabled);
+        fileConfig.set("snapTurnSound", snapTurnSound);
         fileConfig.set("immersiveControls", immersiveControls);
+        fileConfig.set("immersiveAttackMinSpeed", immersiveAttackMinSpeed);
         fileConfig.set("fullMirror",fullMirror);
 
         fileConfig.set("SSAA", SSAA);
@@ -72,11 +76,13 @@ public class PlayOptions {
         smoothTurning = fileConfig.getOrElse("smoothTurning", false);
         snapTurnAmount = fileConfig.<Number>getOrElse("snapTurnAmount", 22f).floatValue();
         smoothTurnRate = fileConfig.<Number>getOrElse("smoothTurnRate", 120f).floatValue();
+        snapTurnSound=fileConfig.getOrElse("snapTurnSound",true);
         fullMirror=fileConfig.getOrElse("fullMirror",false);
 
         teleportEnabled = fileConfig.getOrElse("teleportEnabled", true);
 
         immersiveControls = fileConfig.getOrElse("immersiveControls", false);
+        immersiveAttackMinSpeed=fileConfig.<Number>getOrElse("immersiveAttackMinSpeed", 1.7f).floatValue();
 
         SSAA = fileConfig.<Number>getOrElse("SSAA", 1).floatValue();
     }

@@ -184,7 +184,6 @@ public class VrFirstPersonRenderer {
 
                 float hitC = 1.0f;
                 if (XrInput.lastHit != null) {
-                    matrices.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(45.0F));
                     hitC = XrInput.attackDelay / (float) (XrInput.maxMotionPoints);
                 }
                 PoseStack.Pose entry = matrices.last();
@@ -424,7 +423,7 @@ public class VrFirstPersonRenderer {
         matrices.translate(0, 1 / 16f, -1.5f / 16f);
         matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(PlayOptions.handPitchAdjust));
 
-        if (hand == MCXRPlayClient.getMainHand()) {
+        if (hand == MCXRPlayClient.getMainHand() && XrInput.attackDelay == 0) {
             float swing = -0.1f * Mth.sin((float) (Math.sqrt(Minecraft.getInstance().player.getAttackAnim(tickDelta)) * Math.PI * 2));
             matrices.translate(0, 0, swing);
         }
@@ -512,7 +511,7 @@ public class VrFirstPersonRenderer {
                 matrices.pushPose();
                 transformToHand(matrices, handIndex, deltaTick);
 
-                if (handIndex == MCXRPlayClient.getMainHand()) {
+                if (handIndex == MCXRPlayClient.getMainHand() && XrInput.attackDelay == 0) { //item swing animation if not using motion controls
                     float swing = -0.6f * Mth.sin((float) (Math.sqrt(player.getAttackAnim(deltaTick)) * Math.PI * 2));
                     matrices.mulPose(com.mojang.math.Vector3f.XP.rotation(swing));
                 }
@@ -540,8 +539,8 @@ public class VrFirstPersonRenderer {
                     MapRenderer.renderFirstPersonMap(matrices, consumers, light, stack, false, handIndex== 0);
                 }
                 else {
-                    //item tilted forward in menu or for tool using motion controls
-                    if ((FGM.isScreenOpen() || (XrInput.extendReach>0 && PlayOptions.immersiveControls)) && handIndex == MCXRPlayClient.getMainHand()){
+                    //item tilted forward in menu or for tool using motion controls, but not if right-clicking with tool (eg trident)
+                    if ((FGM.isScreenOpen() || (XrInput.extendReach>0 && PlayOptions.immersiveControls)) && handIndex == MCXRPlayClient.getMainHand() && player.getUseItem() != stack){
                         float n=-80;
                         matrices.mulPose(Quaternion.fromXYZ(Math.toRadians(n), 0, 0));
                         matrices.translate(0, 0, -0.25);
