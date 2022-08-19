@@ -74,7 +74,7 @@ public final class XrInput {
     public static boolean teleport = false;
 
     public static float lastHealth = 0;
-    private static Vec3 gripPosOld;
+    private static Vec3 gripPosOld = new Vec3(0, 0, 0);
 
     private XrInput() {
     }
