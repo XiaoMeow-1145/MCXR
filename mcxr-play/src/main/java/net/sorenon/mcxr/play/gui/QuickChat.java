@@ -1,6 +1,8 @@
 package net.sorenon.mcxr.play.gui;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.chat.ClientChatPreview;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
@@ -76,11 +78,13 @@ public class QuickChat extends ChatScreen {
             int buttonHeight = 20;
 
             this.addRenderableWidget(
-                    new Button(buttonX, buttonY, buttonWidth, buttonHeight, Component.translatable(word), (button -> {
-                        if (word.startsWith("/")) {
-                            Minecraft.getInstance().player.command(word.substring(1));
+                    new Button(buttonX, buttonY, buttonWidth, buttonHeight, Component.literal(word), (button -> {
+                        String string = this.normalizeChatMessage(word);
+                        Component component = Util.mapNullable(this.getChatPreview().pull(string), ClientChatPreview.Preview::response);
+                        if (string.startsWith("/")) {
+                            Minecraft.getInstance().player.commandSigned(string.substring(1), component);
                         } else {
-                            Minecraft.getInstance().player.chat(word);
+                            Minecraft.getInstance().player.chatSigned(string, component);
                         }
 //                        Minecraft.getInstance().gui.getChat().clearMessages(true);
                     }))
