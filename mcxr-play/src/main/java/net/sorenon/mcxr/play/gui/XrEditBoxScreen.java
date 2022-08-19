@@ -27,7 +27,7 @@ public class XrEditBoxScreen extends Screen {
         this.keyboard = new XrEditBoxKeyboard(textField, this, 30);
         this.servers = servers;
         this.servers.load();
-        this.parentScreen = parentScreen;
+        this.parentScreen = parentscreen;
     }
 
     public Screen getParentScreen() {

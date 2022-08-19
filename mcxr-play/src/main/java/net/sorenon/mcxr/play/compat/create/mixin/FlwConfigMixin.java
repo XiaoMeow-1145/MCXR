@@ -1,5 +1,6 @@
 package net.sorenon.mcxr.play.compat.create.mixin;
 
+/*
 import com.jozufozu.flywheel.config.BackendType;
 import com.jozufozu.flywheel.config.FlwConfig;
 import com.jozufozu.flywheel.config.Option;
@@ -24,3 +25,5 @@ public abstract class FlwConfigMixin {
         this.backend = this.addOption(new Option.EnumOption<>("backend", BackendType.OFF));
     }
 }
+
+ */

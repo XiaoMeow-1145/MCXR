@@ -21,26 +21,26 @@ public class XrSignKeyboard extends XrAbstract2DKeyboard {
 
     public XrSignKeyboard(XrSignEditScreen signEditScreen) {
 
-        _signEditScreen = signEditScreen;
-        _textField1 = new EditBox(Minecraft.getInstance().font,
-                (_signEditScreen.width /3) - 160, 0, 160, 10, Component.translatable(""));
-        _textField2 = new EditBox(Minecraft.getInstance().font,
-                (_signEditScreen.width /3) - 160, 10, 160, 10, Component.translatable(""));
-        _textField3 = new EditBox(Minecraft.getInstance().font,
-                (_signEditScreen.width /3) - 160, 20, 160, 10, Component.translatable(""));
-        _textField4 = new EditBox(Minecraft.getInstance().font,
-                (_signEditScreen.width /3) - 160, 30, 160, 10, Component.translatable(""));
+        this.signEditScreen = signEditScreen;
+        textField1 = new EditBox(Minecraft.getInstance().font,
+               (signEditScreen.width /3) - 160, 0, 160, 10, Component.translatable(""));
+        textField2 = new EditBox(Minecraft.getInstance().font,
+               (signEditScreen.width /3) - 160, 10, 160, 10, Component.translatable(""));
+        textField3 = new EditBox(Minecraft.getInstance().font,
+               (signEditScreen.width /3) - 160, 20, 160, 10, Component.translatable(""));
+        textField4 = new EditBox(Minecraft.getInstance().font,
+                (signEditScreen.width /3) - 160, 30, 160, 10, Component.translatable(""));
 
         activeTextField = textField1;
     }
 
     @Override
     public void returnButton(Button instance) {
-        _signEditScreen.getSign().setMessage(0, Component.translatable(_textField1.getValue()));
-        _signEditScreen.getSign().setMessage(1, Component.translatable(_textField2.getValue()));
-        _signEditScreen.getSign().setMessage(2, Component.translatable(_textField3.getValue()));
-        _signEditScreen.getSign().setMessage(3, Component.translatable(_textField4.getValue()));
-        _signEditScreen.onClose();
+        signEditScreen.getSign().setMessage(0, Component.translatable(textField1.getValue()));
+        signEditScreen.getSign().setMessage(1, Component.translatable(textField2.getValue()));
+        signEditScreen.getSign().setMessage(2, Component.translatable(textField3.getValue()));
+        signEditScreen.getSign().setMessage(3, Component.translatable(textField4.getValue()));
+        signEditScreen.onClose();
     }
 
     public EditBox getTextField1() {

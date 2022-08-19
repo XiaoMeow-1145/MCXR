@@ -59,7 +59,6 @@ public final class XrInput {
     public static final GuiActionSet guiActionSet = new GuiActionSet();
 
     private static long lastPollTime = 0;
-    private static long turnTime = 0;
     private static Pose gripPointOld = new Pose();
     private static boolean reachBack = false;
     public static int eatDelay = 0;
@@ -73,6 +72,7 @@ public final class XrInput {
     public static boolean teleport = false;
 
     public static float lastHealth = 0;
+    private static Vec3 gripPosOld;
 
     private XrInput() {
     }
@@ -406,29 +406,6 @@ public final class XrInput {
                 Minecraft client = Minecraft.getInstance();
                 if (client.screen == null) {
                     client.setScreen(new QuickMenu(Component.translatable("mcxr.quickmenu")));
-                }
-            }
-        }
-
-        if (actionSet.sprintAnalog.changedSinceLastSync) {
-            float value = actionSet.sprintAnalog.currentState;
-            Minecraft client = Minecraft.getInstance();
-            if (value > 0.8f && !actionSet.sprintAnalogOn) {//sprint
-                actionSet.sprintAnalogOn=true;
-                client.options.keySprint.setDown(true);
-                //disable sneak
-                if (actionSet.sneakAnalogOn){
-                    actionSet.sneakAnalogOn=false;
-                    client.options.keyShift.setDown(false);
-                    if (client.player != null) {
-                        client.player.setShiftKeyDown(true);
-                    }
-                }
-            } else if (actionSet.sprintAnalogOn && value < 0.6f){
-                actionSet.sprintAnalogOn=false;
-                client.options.keySprint.setDown(false);
-                if (client.player != null) {
-                    client.player.setSprinting(false);
                 }
             }
         }
