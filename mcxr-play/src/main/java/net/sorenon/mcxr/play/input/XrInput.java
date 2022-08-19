@@ -1,14 +1,34 @@
 package net.sorenon.mcxr.play.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
+<<<<<<< HEAD
+=======
+import com.mojang.math.Quaternion;
+import net.minecraft.client.Camera;
+>>>>>>> motion-controls
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+<<<<<<< HEAD
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+=======
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.sorenon.mcxr.core.JOMLUtil;
+>>>>>>> motion-controls
 import net.sorenon.mcxr.core.Pose;
 import net.sorenon.mcxr.play.MCXRGuiManager;
 import net.sorenon.mcxr.play.MCXRPlayClient;
@@ -24,6 +44,7 @@ import net.sorenon.mcxr.play.openxr.OpenXRInstance;
 import net.sorenon.mcxr.play.openxr.OpenXRSession;
 import net.sorenon.mcxr.play.openxr.XrException;
 import net.sorenon.mcxr.play.openxr.XrRuntimeException;
+import net.sorenon.mcxr.play.rendering.MCXRCamera;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
@@ -35,6 +56,11 @@ import oshi.util.tuples.Pair;
 import java.util.HashMap;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+import net.minecraft.sounds.SoundEvents;
+
+>>>>>>> motion-controls
 import static net.sorenon.mcxr.core.JOMLUtil.convert;
 import static org.lwjgl.system.MemoryStack.stackPointers;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -47,6 +73,7 @@ public final class XrInput {
 
     private static long lastPollTime = 0;
     private static long turnTime = 0;
+<<<<<<< HEAD
     private static Vec3 gripPosOld = new Vec3(0,0,0);
 
     public static boolean teleport = false;
@@ -55,6 +82,21 @@ public final class XrInput {
 
     private static int motionPoints = 0;
     private static HitResult lastHit = null;
+=======
+    private static Pose gripPointOld = new Pose();
+    private static boolean reachBack = false;
+    public static int eatDelay = 0;
+    public static int attackDelay = 0;
+
+    private static int motionPoints = 0;
+    public static int maxMotionPoints = 16;
+    public static float extendReach = 0.0f;
+    public static HitResult lastHit = null;
+    public static HitResult newHit = null;
+    public static boolean teleport = false;
+
+    public static float lastHealth = 0;
+>>>>>>> motion-controls
 
     private XrInput() {
     }
@@ -149,6 +191,7 @@ public final class XrInput {
 
         VanillaGameplayActionSet actionSet = vanillaGameplayActionSet;
 
+<<<<<<< HEAD
         if (actionSet.quickmenu.changedSinceLastSync) {
             if (!actionSet.quickmenu.currentState) {
                 Minecraft client = Minecraft.getInstance();
@@ -156,19 +199,88 @@ public final class XrInput {
                     client.setScreen(new QuickMenu(new TranslatableComponent("mcxr.quickmenu")));
                 }
             }
+=======
+        if(actionSet.menu.currentState && actionSet.menu.changedSinceLastSync) {
+            Minecraft.getInstance().pauseGame(false);
+>>>>>>> motion-controls
         }
 
-        if (actionSet.chat.changedSinceLastSync) {
-            if (!actionSet.chat.currentState) {
-                Minecraft client = Minecraft.getInstance();
-                if (client.screen == null) {
-                    if (client.player != null) {
-                        client.setScreen(new ChatScreen(""));
+        if (actionSet.teleport.changedSinceLastSync && !actionSet.teleport.currentState) {
+            XrInput.teleport = true;
+        }
+
+        //==immersive controls test==
+        if(PlayOptions.immersiveControls){
+            ItemStack held = Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND);
+            MouseHandlerAcc mouseHandler = (MouseHandlerAcc) Minecraft.getInstance().mouseHandler;
+            Pose gripPoint = handsActionSet.gripPoses[MCXRPlayClient.getMainHand()].getStagePose();
+            Camera cam = Minecraft.getInstance().gameRenderer.getMainCamera();
+            float delta = (time - lastPollTime) / 1_000_000_000f;
+            //velocity calcs
+            Vec3 gripPos = convert(gripPoint.getPos());
+            Vec3 gripPosOld = convert(gripPointOld.getPos());
+            double velo = gripPos.distanceTo(gripPosOld) / delta;
+            //Quaternionf gripOri = gripPoint.getOrientation().normalize();
+            //Quaternionf gripOriDiff = gripOri.conjugate().mul(gripPointOld.getOrientation().normalize());
+            //double angVelo = gripOriDiff.angle()/ delta;
+            //Vector3f eulers = new Vector3f(0,0,0);
+            //gripOriDiff.getEulerAnglesZYX(eulers);
+            //double angVelo = convert(eulers).length()/ delta;
+            double angVelo = (Mth.abs(gripPoint.getMCPitch() - gripPointOld.getMCPitch())+Mth.abs(gripPoint.getMCYaw() - gripPointOld.getMCYaw()))/delta;
+            boolean moving=angVelo>50 || velo>1;
+            boolean swinging = velo>0.8;
+
+            //delay before attacking starts by building up motion points, used to determine gesture delay
+            if(swinging && motionPoints<maxMotionPoints){motionPoints+=velo+0.3;}
+            else if(!swinging){motionPoints=0;}//resets when a swing ends
+
+            //distance for hit detection
+            if(held.getItem() instanceof SwordItem || held.getItem() instanceof DiggerItem || held.getItem() instanceof TridentItem){
+                extendReach=0.7f;
+            }
+            else{extendReach=0.0f;}
+            double minDist = 0.3+extendReach;
+
+            HitResult hitResult = Minecraft.getInstance().hitResult;//=last hit or new hit
+            //newHit = Minecraft.getInstance().hitResult;
+            Pose handPoint = handsActionSet.aimPoses[MCXRPlayClient.getMainHand()].getMinecraftPose();
+            Vec3 handPos = convert(handPoint.getPos());
+
+            if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {//something in ray
+                double curDist = handPos.distanceTo(hitResult.getLocation());
+                double newDist = handPos.distanceTo(newHit.getLocation());//using this doesn't detect entities?
+                double oldDist=0;
+                if(lastHit!=null) {
+                    oldDist = handPos.distanceTo(lastHit.getLocation());
+                }
+
+                if (lastHit == null || (oldDist-0.1)>newDist) {//new target or closer target
+                    if(velo>PlayOptions.immersiveAttackMinSpeed) {
+                        if (hitResult.getType() == HitResult.Type.ENTITY && curDist<minDist+1.5) {//make hit distance for entities more practical
+                            attackDelay = 8;
+                            lastHit = hitResult;//some reason newHit doesn't work for entities.
+                        }
+                        else if (hitResult.getType() == HitResult.Type.BLOCK && newDist<minDist) {
+                            if(lastHit == null || (lastHit != null && lastHit.getType() == HitResult.Type.BLOCK)) {
+                                attackDelay = motionPoints+2;
+                                lastHit = newHit;
+                            }
+                        }
+                    }
+                }
+                else if (lastHit.getType() == HitResult.Type.BLOCK){//continue on current target or let go, with larger leeway to continue swings
+                    if (hitResult.getType() == HitResult.Type.ENTITY && velo>PlayOptions.immersiveAttackMinSpeed) {//prioritise entites in range, doesnt work since newHit doesn't like entities
+                        lastHit = newHit;
+                        attackDelay = 8;
+                    }
+                    //else if (oldDist < minDist*1.2) {//continue clicking
+                    else if (lastHit.getLocation().distanceTo(newHit.getLocation()) < 0.3) {//continue clicking
+                        attackDelay += motionPoints;
                     }
                 }
             }
-        }
 
+<<<<<<< HEAD
         if (actionSet.hotbarLeft.currentState && actionSet.hotbarLeft.changedSinceLastSync) {
             if (Minecraft.getInstance().player != null) {
                 Minecraft.getInstance().player.getInventory().swapPaint(+1);
@@ -179,15 +291,57 @@ public final class XrInput {
                 Minecraft.getInstance().player.getInventory().swapPaint(-1);
             }
         }
-
-        if(actionSet.menu.currentState && actionSet.menu.changedSinceLastSync) {
-            Minecraft.getInstance().pauseGame(false);
-        }
-
-        if (actionSet.resetPos.changedSinceLastSync) {
-            if (actionSet.resetPos.currentState) {
-                MCXRPlayClient.resetView();
+=======
+            //decay attackDelay without conditions
+            if (attackDelay > 0) {
+                attackDelay -= 1;
+                if(attackDelay>maxMotionPoints)attackDelay=maxMotionPoints;
             }
+            else {
+                lastHit = null;
+            }
+            if(attackDelay > 2){//stop pressing before unlocking crosshair
+                mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_PRESS, 0);
+            }
+            else{
+                if (!actionSet.attack.currentState) {//only if not pressing attack
+                    mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_RELEASE, 0);
+                }
+            }
+>>>>>>> motion-controls
+
+            //==item eating==
+            InputConstants.Key useKey = Minecraft.getInstance().options.keyUse.getDefaultKey();
+            boolean edible=held.isEdible() || held.getUseAnimation() == UseAnim.DRINK;
+            Vec3 faceVec = handPos.subtract(cam.getPosition().add(cam.getLookVector().x()*0.15,-0.03+cam.getLookVector().y()*0.15,cam.getLookVector().z()*0.15));
+            if(edible && faceVec.length()<0.1 && moving){
+                KeyMapping.click(useKey);
+                KeyMapping.set(useKey, true);
+                eatDelay=5;
+            }
+            else{
+                if(eatDelay>0){eatDelay-=1;}
+                if(!actionSet.use.currentState && eatDelay==0){
+                    KeyMapping.set(useKey, false);
+                }
+                if(eatDelay==0 && faceVec.length()<0.1){eatDelay=1;}//for item near face animation
+            }
+
+            //==item swapping==
+            Vec3 backVec = handPos.subtract(cam.getPosition().add(-cam.getLookVector().x()*0.2,-cam.getLookVector().y()*0.2,-cam.getLookVector().z()*0.2));
+            InputConstants.Key swapKey = Minecraft.getInstance().options.keySwapOffhand.getDefaultKey();
+            if(backVec.length()<0.17 && !reachBack){
+                KeyMapping.click(swapKey);
+                KeyMapping.set(swapKey, true);
+                reachBack=true;
+            } else {
+                KeyMapping.set(swapKey, false);
+                if(backVec.length()>0.18) {
+                    reachBack = false;
+                }
+            }
+
+            gripPointOld.set(gripPoint);
         }
 
         if (actionSet.teleport.changedSinceLastSync && !actionSet.teleport.currentState) {
@@ -232,6 +386,10 @@ public final class XrInput {
                     MCXRPlayClient.stagePosition = wantedPos.sub(newPos).mul(1, 0, 1);
 
                     actionSet.turnActivated = true;
+
+                    if (PlayOptions.snapTurnSound) {
+                        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.WOOL_STEP, 2.5f, 0.3f));
+                    }
                 }
             }
         }
@@ -245,6 +403,15 @@ public final class XrInput {
                     Minecraft.getInstance().player.getInventory().swapPaint(-value);
                 actionSet.hotbarActivated = true;
             }
+        }
+
+        if (actionSet.hotbarLeft.currentState && actionSet.hotbarLeft.changedSinceLastSync) {
+            if (Minecraft.getInstance().player != null)
+                Minecraft.getInstance().player.getInventory().swapPaint(+1);
+        }
+        if (actionSet.hotbarRight.currentState && actionSet.hotbarRight.changedSinceLastSync) {
+            if (Minecraft.getInstance().player != null)
+                Minecraft.getInstance().player.getInventory().swapPaint(-1);
         }
 
         if (actionSet.turnLeft.currentState && actionSet.turnLeft.changedSinceLastSync) {
@@ -285,7 +452,11 @@ public final class XrInput {
             if (!actionSet.quickmenu.currentState) {
                 Minecraft client = Minecraft.getInstance();
                 if (client.screen == null) {
+<<<<<<< HEAD
                     client.setScreen(new QuickMenu(new TranslatableComponent("mcxr.quickmenu")));
+=======
+                    client.setScreen(new QuickMenu(Component.translatable("mcxr.quickmenu")));
+>>>>>>> motion-controls
                 }
             }
         }
@@ -313,7 +484,34 @@ public final class XrInput {
             }
         }
 
+<<<<<<< HEAD
         if (actionSet.swapHands.changedSinceLastSync) {
+=======
+        if (actionSet.sprintAnalog.changedSinceLastSync) {
+            float value = actionSet.sprintAnalog.currentState;
+            Minecraft client = Minecraft.getInstance();
+            if (value > 0.8f && !actionSet.sprintAnalogOn) {//sprint
+                actionSet.sprintAnalogOn=true;
+                client.options.keySprint.setDown(true);
+                //disable sneak
+                if (actionSet.sneakAnalogOn){
+                    actionSet.sneakAnalogOn=false;
+                    client.options.keyShift.setDown(false);
+                    if (client.player != null) {
+                        client.player.setShiftKeyDown(true);
+                    }
+                }
+            } else if (actionSet.sprintAnalogOn && value < 0.6f){
+                actionSet.sprintAnalogOn=false;
+                client.options.keySprint.setDown(false);
+                if (client.player != null) {
+                    client.player.setSprinting(false);
+                }
+            }
+        }
+
+        if (actionSet.sneak.changedSinceLastSync) {
+>>>>>>> motion-controls
             Minecraft client = Minecraft.getInstance();
             InputConstants.Key key = client.options.keySwapOffhand.getDefaultKey();
             if (actionSet.swapHands.currentState) {
@@ -323,7 +521,10 @@ public final class XrInput {
                 KeyMapping.set(key, false);
             }
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> motion-controls
         if (actionSet.sneakAnalog.changedSinceLastSync) {
             float value = actionSet.sneakAnalog.currentState;
             Minecraft client = Minecraft.getInstance();
@@ -351,6 +552,19 @@ public final class XrInput {
             }
         }
 
+<<<<<<< HEAD
+=======
+        if (actionSet.swapHands.changedSinceLastSync) {
+            Minecraft client = Minecraft.getInstance();
+            InputConstants.Key key = client.options.keySwapOffhand.getDefaultKey();
+            if (actionSet.swapHands.currentState) {
+                KeyMapping.click(key);
+                KeyMapping.set(key, true);
+            } else {
+                KeyMapping.set(key, false);
+            }
+        }
+>>>>>>> motion-controls
 //        if (actionSet.attackState.changedSinceLastSync()) {
 //            MinecraftClient client = MinecraftClient.getInstance();
 //            InputUtil.Key key = client.options.keyAttack.getDefaultKey();
@@ -452,17 +666,26 @@ public final class XrInput {
                 if (actionSet.attack.currentState) {
                     mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
                             GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_PRESS, 0);
+<<<<<<< HEAD
                     motionPoints=0;
+=======
+>>>>>>> motion-controls
                     if(MCXRPlayClient.getMainHand() == 1) {
                         applyHapticsRight(300, 1, XR10.XR_FREQUENCY_UNSPECIFIED);
                     } else {
                         applyHapticsLeft(300, 1, XR10.XR_FREQUENCY_UNSPECIFIED);
                     }
+<<<<<<< HEAD
+=======
+                    attackDelay=0;
+                    lastHit=null;
+>>>>>>> motion-controls
                 }
             }
             if (!actionSet.attack.currentState) {
                 mouseHandler.callOnPress(Minecraft.getInstance().getWindow().getWindow(),
                         GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_RELEASE, 0);
+
             }
             if (actionSet.inventory.currentState) {
                 long heldTime = predictedDisplayTime - actionSet.inventory.lastChangeTime;
@@ -507,6 +730,50 @@ public final class XrInput {
                     }
                 }
             }
+<<<<<<< HEAD
+        }
+    }
+
+    public static void applyHaptics(long duration, float amplitude, float frequency) {
+        applyHapticsLeft(duration, amplitude, frequency);
+        applyHapticsRight(duration, amplitude, frequency);
+    }
+
+    public static void applyHapticsRight(long duration, float amplitude, float frequency) {
+        try(var stack = stackPush()) {
+            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
+                    XR10.XR_TYPE_HAPTIC_VIBRATION,
+                    NULL,
+                    duration,
+                    frequency,
+                    amplitude
+            );
+
+            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
+            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
+            hapticActionInfo.action(vanillaGameplayActionSet.rightHaptic.getHandle());
+
+            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
+        }
+    }
+
+    public static void applyHapticsLeft(long duration, float amplitude, float frequency) {
+        try(var stack = stackPush()) {
+            XrHapticVibration vibrationInfo = XrHapticVibration.calloc(stack).set(
+                    XR10.XR_TYPE_HAPTIC_VIBRATION,
+                    NULL,
+                    duration,
+                    frequency,
+                    amplitude
+            );
+
+            XrHapticActionInfo hapticActionInfo = XrHapticActionInfo.calloc();
+            hapticActionInfo.type(XR10.XR_TYPE_HAPTIC_ACTION_INFO);
+            hapticActionInfo.action(vanillaGameplayActionSet.leftHaptic.getHandle());
+
+            MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
+=======
+>>>>>>> motion-controls
         }
     }
 
@@ -549,5 +816,9 @@ public final class XrInput {
 
             MCXRPlayClient.OPEN_XR_STATE.instance.checkPanic(XR10.xrApplyHapticFeedback(MCXRPlayClient.OPEN_XR_STATE.session.handle, hapticActionInfo, XrHapticBaseHeader.create(vibrationInfo.address())), "xrApplyHapticFeedback");
         }
+    }
+
+    public static void setNewHit(HitResult hit) {
+        newHit=hit;
     }
 }

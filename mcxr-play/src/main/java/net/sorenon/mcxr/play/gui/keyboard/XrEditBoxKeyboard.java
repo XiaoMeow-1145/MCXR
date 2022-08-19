@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.sorenon.mcxr.play.gui.XrEditBoxScreen;
 
 public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
@@ -26,9 +26,9 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
         this.textField = textField;
         this.editScreen = editScreen;
 
-        placeholderField = new EditBox(Minecraft.getInstance().font,
-                133, 22, this.textField.getWidth(), this.textField.getHeight(),
-                this.textField, new TextComponent(""));
+        _placeholderField = new EditBox(Minecraft.getInstance().font,
+                133, 22, _textField.getWidth(), _textField.getHeight(),
+                _textField, Component.translatable(""));
 
         this.buttonWidth = buttonWidth;
     }
@@ -50,10 +50,10 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
 
         } else if (editScreen.getParentScreen().getClass() == JoinMultiplayerScreen.class) {
 
-            ServerData server = new ServerData(placeholderField.getValue(), placeholderField.getValue(), false);
-            editScreen.getServers().add(server);
-            editScreen.getServers().save();
-            Minecraft.getInstance().setScreen(editScreen.getParentScreen());
+            ServerData server = new ServerData(_placeholderField.getValue(), _placeholderField.getValue(), false);
+            _editScreen.getServers().add(server, false);
+            _editScreen.getServers().save();
+            Minecraft.getInstance().setScreen(_editScreen.getParentScreen());
 
 
         } else if (editScreen.getParentScreen().getClass() == CreativeModeInventoryScreen.class) {

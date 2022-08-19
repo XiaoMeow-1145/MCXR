@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.sorenon.mcxr.play.gui.keyboard.XrSignKeyboard;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class XrSignEditScreen extends Screen {
     private final SignBlockEntity sign;
     private final XrSignKeyboard keyboard;
 
-    public XrSignEditScreen(TranslatableComponent title, SignBlockEntity sign) {
+    public XrSignEditScreen(Component title, SignBlockEntity sign) {
 
         super(title);
         this.sign = sign;

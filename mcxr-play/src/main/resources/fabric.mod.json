@@ -9,7 +9,8 @@
     "TheJudge",
     "CADIndie",
     "IzzyDotExe",
-    "Flamgop"
+    "Flamgop",
+    "xanion"
   ],
   "contact": {
     "homepage": "https://github.com/QuestCraftPlusPlus/MCXR",
@@ -39,7 +40,7 @@
   "depends": {
     "fabricloader": ">=0.14.6",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.x",
     "mcxr-core": ">=${core_version}",
     "java": ">=17"
   }

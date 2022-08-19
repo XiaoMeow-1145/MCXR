@@ -5,15 +5,27 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
+//import com.mojang.math.Vector3f;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+<<<<<<< HEAD
+=======
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.ScreenEffectRenderer;
+>>>>>>> motion-controls
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+<<<<<<< HEAD
+=======
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+>>>>>>> motion-controls
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,10 +34,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+<<<<<<< HEAD
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.border.WorldBorder;
 import net.sorenon.mcxr.core.JOMLUtil;
+=======
+import net.sorenon.mcxr.core.JOMLUtil;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.border.WorldBorder;
+>>>>>>> motion-controls
 import net.sorenon.mcxr.core.MCXRCore;
 import net.sorenon.mcxr.core.Pose;
 import net.sorenon.mcxr.core.Teleport;
@@ -35,7 +55,11 @@ import net.sorenon.mcxr.play.MCXRGuiManager;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.accessor.MinecraftExt;
+<<<<<<< HEAD
 import net.sorenon.mcxr.play.input.XrInput;
+=======
+import net.sorenon.mcxr.play.input.actionsets.VanillaGameplayActionSet;
+>>>>>>> motion-controls
 import net.sorenon.mcxr.play.rendering.MCXRCamera;
 import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
 import net.sorenon.mcxr.play.rendering.RenderPass;
@@ -487,8 +511,7 @@ public class MCXRGameRenderer {
         bufferBuilder.vertex(0.0, height * 2, 0.0).uv(0.0F, 1 - v * 2).color(255, 255, 255, 255).endVertex();
         bufferBuilder.vertex(width * 2, 0.0, 0.0).uv(u * 2, 1).color(255, 255, 255, 255).endVertex();
         bufferBuilder.vertex(0.0, 0.0, 0.0).uv(0.0F, 1).color(255, 255, 255, 255).endVertex();
-        bufferBuilder.end();
-        BufferUploader._endInternal(bufferBuilder);
+        BufferUploader.draw(bufferBuilder.end());
         shader.clear();
         GlStateManager._depthMask(true);
         GlStateManager._colorMask(true, true, true, true);
@@ -550,8 +573,12 @@ public class MCXRGameRenderer {
         bufferBuilder.vertex(width-xOff, height-yOff, 0.0).uv(1, 0.0f).color(255, 255, 255, 255).endVertex();
         bufferBuilder.vertex(width-xOff, yOff, 0.0).uv(1, 1.0f).color(255, 255, 255, 255).endVertex();
         bufferBuilder.vertex(xOff, yOff, 0.0).uv(0.0F, 1.0F).color(255, 255, 255, 255).endVertex();
+<<<<<<< HEAD
         bufferBuilder.end();
         BufferUploader._endInternal(bufferBuilder);
+=======
+        BufferUploader.draw(bufferBuilder.end());
+>>>>>>> motion-controls
         shader.clear();
         GlStateManager._depthMask(true);
         GlStateManager._colorMask(true, true, true, true);
@@ -559,12 +586,118 @@ public class MCXRGameRenderer {
         matrixStack.popPose();
     }
 
+<<<<<<< HEAD
     private void renderOverlay2(RenderTarget framebuffer, ResourceLocation texture, float red, float green, float blue,float alpha) {
         ShaderInstance shader = Minecraft.getInstance().gameRenderer.blitShader;
         //ShaderInstance shader = this.blitShader;//to eye
+=======
+    private void renderOverlay(RenderTarget framebuffer, ResourceLocation texture, float red, float green, float blue,float alpha) {
+        //ShaderInstance shader = Minecraft.getInstance().gameRenderer.blitShader;//to screen
+        ShaderInstance shader = this.blitShader;//to eye
+>>>>>>> motion-controls
 
         TextureManager textureManager = Minecraft.getInstance().getTextureManager();
         AbstractTexture abstractTexture = textureManager.getTexture(texture);
+
+        shader.setSampler("DiffuseSampler", abstractTexture.getId());
+
+        PoseStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushPose();
+        matrixStack.setIdentity();
+        RenderSystem.applyModelViewMatrix();
+
+        int width = framebuffer.width;
+        int height = framebuffer.height;
+
+        GlStateManager._colorMask(true, true, true, true);
+        GlStateManager._disableDepthTest();
+        GlStateManager._depthMask(false);
+        GlStateManager._viewport(0, 0, width, height);
+        GlStateManager._enableBlend();
+<<<<<<< HEAD
+=======
+        GlStateManager._blendFunc(GlStateManager.SourceFactor.SRC_ALPHA.value, GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA.value);
+>>>>>>> motion-controls
+
+        Matrix4f matrix4f = Matrix4f.orthographic((float) width, (float) -height, 1000.0F, 3000.0F);
+        RenderSystem.setProjectionMatrix(matrix4f);
+        if (shader.MODEL_VIEW_MATRIX != null) {
+            shader.MODEL_VIEW_MATRIX.set(Matrix4f.createTranslateMatrix(0.0F, 0.0F, -2000.0F));
+        }
+
+        if (shader.PROJECTION_MATRIX != null) {
+            shader.PROJECTION_MATRIX.set(matrix4f);
+        }
+
+        shader.apply();
+        Tesselator tessellator = RenderSystem.renderThreadTesselator();//Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferBuilder.vertex(0.0, height, -90.0).uv(0f, 0f).color(red, green, blue, alpha).endVertex();
+        bufferBuilder.vertex(width, height, -90.0).uv(1f, 0f).color(red, green, blue, alpha).endVertex();
+        bufferBuilder.vertex(width, 0.0, -90.0).uv(1f, 1f).color(red, green, blue, alpha).endVertex();
+        bufferBuilder.vertex(0.0, 0.0, -90.0).uv(0f, 1f).color(red, green, blue, alpha).endVertex();
+
+<<<<<<< HEAD
+        bufferBuilder.end();
+        BufferUploader._endInternal(bufferBuilder);
+        bufferBuilder.vertex(0.0, height, 0.0).uv(0.0F, 0.0f).color(255, 255, 255, 255).endVertex();
+        bufferBuilder.vertex(width, height, 0.0).uv(1, 0.0f).color(255, 255, 255, 255).endVertex();
+        bufferBuilder.vertex(width, 0.0, 0.0).uv(1, 1.0f).color(255, 255, 255, 255).endVertex();
+        bufferBuilder.vertex(0.0, 0.0, 0.0).uv(0.0F, 1.0F).color(255, 255, 255, 255).endVertex();
+        bufferBuilder.end();
+        BufferUploader._endInternal(bufferBuilder);
+=======
+        BufferUploader.draw(bufferBuilder.end());
+        shader.clear();
+        GlStateManager._depthMask(true);
+        GlStateManager._colorMask(true, true, true, true);
+        //GlStateManager._disableBlend();
+
+        matrixStack.popPose();
+    }
+
+    private void renderVignette(RenderTarget framebuffer,Entity entity) {
+        WorldBorder worldBorder = this.client.level.getWorldBorder();
+        float f = (float)worldBorder.getDistanceToBorder(entity);
+        double d = Math.min(
+                worldBorder.getLerpSpeed() * (double)worldBorder.getWarningTime() * 1000.0, Math.abs(worldBorder.getLerpTarget() - worldBorder.getSize())
+        );
+        double e = Math.max((double)worldBorder.getWarningBlocks(), d);
+        if ((double)f < e) {
+            f = 1.0F - (float)((double)f / e);
+        } else {
+            f = 0.0F;
+        }
+        //RenderSystem.blendFuncSeparate(
+        //        GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
+        //);
+        //breaks sky rendering in second viewindex, just use a pre-formatter png
+        //GlStateManager._blendFuncSeparate(GlStateManager.SourceFactor.ZERO.value, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR.value, GlStateManager.SourceFactor.ONE.value, GlStateManager.DestFactor.ZERO.value);
+        if (f > 0.0F) {
+            f = Mth.clamp(f, 0.0F, 1.0F);
+            //RenderSystem.setShaderColor(0.0F, f, f, 1.0F);
+            //renderOverlay(framebuffer, new ResourceLocation("textures/misc/vignette.png"),0f,f,f,1f);
+            renderOverlay(framebuffer, new ResourceLocation("textures/misc/vignette_vr.png"),0f,0f,0f,f);
+        } else {
+            float l = LightTexture.getBrightness(entity.level.dimensionType(), entity.level.getMaxLocalRawBrightness(new BlockPos(entity.getX(), entity.getEyeY(), entity.getZ())));
+            float g = Mth.clamp(1.0F - l, 0.0F, 1.0F);
+            //RenderSystem.setShaderColor(g, g, g, 1.0F);
+            //renderOverlay(framebuffer, new ResourceLocation("textures/misc/vignette.png"),g,g,g,1f);
+            renderOverlay(framebuffer, new ResourceLocation("textures/misc/vignette_vr.png"),0f,0f,0f,g);
+        }
+    }
+
+    private void renderPortalOverlay(RenderTarget framebuffer, float nauseaStrength) {
+        if (nauseaStrength < 1.0F) {
+            nauseaStrength *= nauseaStrength;
+            nauseaStrength *= nauseaStrength;
+            nauseaStrength = nauseaStrength * 0.8F;
+        }
+        ShaderInstance shader = this.blitShader;//to eye
+
+        TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+        AbstractTexture abstractTexture = textureManager.getTexture(InventoryMenu.BLOCK_ATLAS);
 
         shader.setSampler("DiffuseSampler", abstractTexture.getId());
 
@@ -593,26 +726,26 @@ public class MCXRGameRenderer {
         }
 
         shader.apply();
+        TextureAtlasSprite textureAtlasSprite = this.client.getBlockRenderer().getBlockModelShaper().getParticleIcon(Blocks.NETHER_PORTAL.defaultBlockState());
+        float f = textureAtlasSprite.getU0();
+        float g = textureAtlasSprite.getV0();
+        float h = textureAtlasSprite.getU1();
+        float i = textureAtlasSprite.getV1();
         Tesselator tessellator = RenderSystem.renderThreadTesselator();//Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferBuilder.vertex(0.0, height, -90.0).uv(0f, 0f).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex(width, height, -90.0).uv(1f, 0f).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex(width, 0.0, -90.0).uv(1f, 1f).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex(0.0, 0.0, -90.0).uv(0f, 1f).color(red, green, blue, alpha).endVertex();
+        bufferBuilder.vertex(0.0, height, -90.0).uv(f, i).color(1f, 1f, 1f, nauseaStrength).endVertex();
+        bufferBuilder.vertex(width, height, -90.0).uv(h, i).color(1f, 1f, 1f, nauseaStrength).endVertex();
+        bufferBuilder.vertex(width, 0.0, -90.0).uv(h, g).color(1f, 1f, 1f, nauseaStrength).endVertex();
+        bufferBuilder.vertex(0.0, 0.0, -90.0).uv(f, g).color(1f, 1f, 1f, nauseaStrength).endVertex();
 
-        bufferBuilder.end();
-        BufferUploader._endInternal(bufferBuilder);
-        bufferBuilder.vertex(0.0, height, 0.0).uv(0.0F, 0.0f).color(255, 255, 255, 255).endVertex();
-        bufferBuilder.vertex(width, height, 0.0).uv(1, 0.0f).color(255, 255, 255, 255).endVertex();
-        bufferBuilder.vertex(width, 0.0, 0.0).uv(1, 1.0f).color(255, 255, 255, 255).endVertex();
-        bufferBuilder.vertex(0.0, 0.0, 0.0).uv(0.0F, 1.0F).color(255, 255, 255, 255).endVertex();
-        bufferBuilder.end();
-        BufferUploader._endInternal(bufferBuilder);
+        BufferUploader.draw(bufferBuilder.end());
+>>>>>>> motion-controls
         shader.clear();
         GlStateManager._depthMask(true);
         GlStateManager._colorMask(true, true, true, true);
         //GlStateManager._disableBlend();
+<<<<<<< HEAD
 
         matrixStack.popPose();
     }
@@ -756,6 +889,8 @@ public class MCXRGameRenderer {
         GlStateManager._depthMask(true);
         GlStateManager._colorMask(true, true, true, true);
         //GlStateManager._disableBlend();
+=======
+>>>>>>> motion-controls
 
         matrixStack.popPose();
     }

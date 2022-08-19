@@ -3,6 +3,7 @@ package net.sorenon.mcxr.play.gui.keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.gui.XrSignEditScreen;
@@ -22,15 +23,15 @@ public class XrSignKeyboard extends XrAbstract2DKeyboard {
 
     public XrSignKeyboard(XrSignEditScreen signEditScreen) {
 
-        this.signEditScreen = signEditScreen;
-        textField1 = new EditBox(Minecraft.getInstance().font,
-                133, 0, 160, 10, new TextComponent(""));
-        textField2 = new EditBox(Minecraft.getInstance().font,
-                133, 10, 160, 10, new TextComponent(""));
-        textField3 = new EditBox(Minecraft.getInstance().font,
-                133, 20, 160, 10, new TextComponent(""));
-        textField4 = new EditBox(Minecraft.getInstance().font,
-                133, 30, 160, 10, new TextComponent(""));
+        _signEditScreen = signEditScreen;
+        _textField1 = new EditBox(Minecraft.getInstance().font,
+                (_signEditScreen.width /3) - 160, 0, 160, 10, Component.translatable(""));
+        _textField2 = new EditBox(Minecraft.getInstance().font,
+                (_signEditScreen.width /3) - 160, 10, 160, 10, Component.translatable(""));
+        _textField3 = new EditBox(Minecraft.getInstance().font,
+                (_signEditScreen.width /3) - 160, 20, 160, 10, Component.translatable(""));
+        _textField4 = new EditBox(Minecraft.getInstance().font,
+                (_signEditScreen.width /3) - 160, 30, 160, 10, Component.translatable(""));
 
         activeTextField = textField1;
     }
