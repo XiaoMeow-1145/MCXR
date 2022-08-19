@@ -5,10 +5,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.sorenon.mcxr.core.Pose;
@@ -172,12 +170,14 @@ public final class XrInput {
         }
 
         if (actionSet.hotbarLeft.currentState && actionSet.hotbarLeft.changedSinceLastSync) {
-            if (Minecraft.getInstance().player != null)
+            if (Minecraft.getInstance().player != null) {
                 Minecraft.getInstance().player.getInventory().swapPaint(+1);
+            }
         }
         if (actionSet.hotbarRight.currentState && actionSet.hotbarRight.changedSinceLastSync) {
-            if (Minecraft.getInstance().player != null)
+            if (Minecraft.getInstance().player != null) {
                 Minecraft.getInstance().player.getInventory().swapPaint(-1);
+            }
         }
 
         if(actionSet.menu.currentState && actionSet.menu.changedSinceLastSync) {
@@ -245,15 +245,6 @@ public final class XrInput {
                     Minecraft.getInstance().player.getInventory().swapPaint(-value);
                 actionSet.hotbarActivated = true;
             }
-        }
-
-        if (actionSet.hotbarLeft.currentState && actionSet.hotbarLeft.changedSinceLastSync) {
-            if (Minecraft.getInstance().player != null)
-                Minecraft.getInstance().player.getInventory().swapPaint(+1);
-        }
-        if (actionSet.hotbarRight.currentState && actionSet.hotbarRight.changedSinceLastSync) {
-            if (Minecraft.getInstance().player != null)
-                Minecraft.getInstance().player.getInventory().swapPaint(-1);
         }
 
         if (actionSet.turnLeft.currentState && actionSet.turnLeft.changedSinceLastSync) {
