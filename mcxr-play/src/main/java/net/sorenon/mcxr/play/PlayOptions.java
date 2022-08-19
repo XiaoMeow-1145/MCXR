@@ -53,7 +53,6 @@ public class PlayOptions {
         fileConfig.set("snapTurnAmount", snapTurnAmount);
         fileConfig.set("smoothTurnRate", smoothTurnRate);
         fileConfig.set("teleportEnabled", teleportEnabled);
-        fileConfig.set("snapTurnSound", snapTurnSound);
         fileConfig.set("immersiveControls", immersiveControls);
         fileConfig.set("immersiveAttackMinSpeed", immersiveAttackMinSpeed);
         fileConfig.set("fullMirror",fullMirror);
