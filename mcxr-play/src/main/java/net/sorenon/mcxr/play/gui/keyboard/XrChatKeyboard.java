@@ -1,5 +1,6 @@
 package net.sorenon.mcxr.play.gui.keyboard;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.sorenon.mcxr.play.gui.XrChatScreen;
@@ -52,8 +53,13 @@ public class XrChatKeyboard extends XrAbstract2DKeyboard {
         if (chatBox.getValue().equals("")) {
             chatScreen.onClose();
         } else {
-            chatScreen.sendMessage(chatBox.getValue());
-            chatScreen.onClose();
+            if(_chatBox.getValue().startsWith("/")) {
+                Minecraft.getInstance().player.command(_chatBox.getValue().substring(1));
+                _chatScreen.onClose();
+            } else {
+                Minecraft.getInstance().player.chat(_chatBox.getValue());
+                _chatScreen.onClose();
+            }
         }
     }
 

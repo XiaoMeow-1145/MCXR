@@ -17,6 +17,7 @@ import static org.lwjgl.system.JNI.callPI;
 import static org.lwjgl.system.JNI.callPPPI;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.memGetAddress;
 
 public class XR {
 
@@ -105,7 +106,6 @@ public class XR {
                     System.out.println("XrResult:" + callPI(createInfo.address(), xrInitializeLoaderKHR));
                 }
             }
-
             xrCreateInstance = library.getFunctionAddress("xrCreateInstance");
             xrEnumerateInstanceExtensionProperties = getFunctionAddress("xrEnumerateInstanceExtensionProperties");
             xrEnumerateApiLayerProperties = getFunctionAddress("xrEnumerateApiLayerProperties");

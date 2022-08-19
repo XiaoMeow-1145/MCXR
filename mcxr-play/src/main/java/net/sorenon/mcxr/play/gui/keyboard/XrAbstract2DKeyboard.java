@@ -1,7 +1,11 @@
 package net.sorenon.mcxr.play.gui.keyboard;
 
 import net.minecraft.client.gui.components.Button;
+<<<<<<< HEAD
 import net.minecraft.network.chat.TextComponent;
+=======
+import net.minecraft.network.chat.Component;
+>>>>>>> motion-controls
 
 public abstract class XrAbstract2DKeyboard {
 
@@ -39,7 +43,7 @@ public abstract class XrAbstract2DKeyboard {
         shiftCharset = new char[][] {
                 new char[] {'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b'},
                 new char[] {'\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|'},
-                new char[] {'\f', 'A', 'S', 'D', 'F', 'G', 'G', 'J', 'K', 'L', ':', '\"', '\r'},
+                new char[] {'\f', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '\"', '\r'},
                 new char[] {'■','\n','■', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?'},
                 new char[] {' '}
         };
@@ -73,6 +77,7 @@ public abstract class XrAbstract2DKeyboard {
 
                     case '\r' ->
                         new Button(buttonX, buttonY, buttonwidth * 2, 20,
+<<<<<<< HEAD
                             new TextComponent("Enter"),
                             this::returnButton);
                     case '\b' ->
@@ -98,6 +103,33 @@ public abstract class XrAbstract2DKeyboard {
                     default ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
                             new TextComponent(Character.toString(character)),
+=======
+                                Component.translatable("Enter"),
+                            this::returnButton);
+                    case '\b' ->
+                        new Button(buttonX, buttonY, buttonwidth, 20,
+                                Component.translatable("Bksp"),
+                            this::backSpaceButton);
+                    case ' ' ->
+                        new Button(buttonX + 150, buttonY, buttonwidth + 100, 20,
+                                Component.translatable("Space"),
+                            this::spaceButton);
+                    case '\t' ->
+                        new Button(buttonX, buttonY, buttonwidth, 20,
+                                Component.translatable("Tab"),
+                            this::tabButton);
+                    case '\n' ->
+                        new Button(buttonX, buttonY, buttonwidth * 2, 20,
+                                Component.translatable("Shift"),
+                            this::shiftButton);
+                    case '\f' ->
+                        new Button(buttonX, buttonY, buttonwidth, 20,
+                                Component.translatable("Caps"),
+                            this::capsButton);
+                    default ->
+                        new Button(buttonX, buttonY, buttonwidth, 20,
+                                Component.translatable(Character.toString(character)),
+>>>>>>> motion-controls
                             this::letterButton);
 
                 };

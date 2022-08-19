@@ -63,6 +63,7 @@ public class OpenXRState {
         if (PlayOptions.xrUninitialized) {
             return;
         }
+
         if (!XR.loaded()) {
             XR.create("openxr_loader");
         }

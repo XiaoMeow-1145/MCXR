@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class PlayOptions {
@@ -22,7 +21,9 @@ public class PlayOptions {
     public static boolean smoothTurning = false;
     public static float snapTurnAmount = 22f;
     public static float smoothTurnRate = 120f;
+    public static boolean snapTurnSound = true;
     public static boolean immersiveControls = true;
+    public static float immersiveAttackMinSpeed = 1.7f;
     public static boolean teleportEnabled = false;
 
     public static boolean fullMirror = false;
@@ -33,8 +34,6 @@ public class PlayOptions {
     public static float handPitchAdjust = 30;
 
     public static float SSAA = 1;
-
-    public static IndexTouchpad indexTouchpadState = IndexTouchpad.Off;
 
     public static void init() {
         fileConfig = FileConfig.of(FabricLoader.getInstance().getConfigDir().resolve("mcxr-play.toml"));
@@ -53,9 +52,10 @@ public class PlayOptions {
         fileConfig.set("smoothTurning", smoothTurning);
         fileConfig.set("snapTurnAmount", snapTurnAmount);
         fileConfig.set("smoothTurnRate", smoothTurnRate);
-        fileConfig.set("indexTouchpadState", indexTouchpadState);
         fileConfig.set("teleportEnabled", teleportEnabled);
+        fileConfig.set("snapTurnSound", snapTurnSound);
         fileConfig.set("immersiveControls", immersiveControls);
+        fileConfig.set("immersiveAttackMinSpeed", immersiveAttackMinSpeed);
         fileConfig.set("fullMirror",fullMirror);
 
         fileConfig.set("SSAA", SSAA);
@@ -76,51 +76,14 @@ public class PlayOptions {
         smoothTurning = fileConfig.getOrElse("smoothTurning", false);
         snapTurnAmount = fileConfig.<Number>getOrElse("snapTurnAmount", 22f).floatValue();
         smoothTurnRate = fileConfig.<Number>getOrElse("smoothTurnRate", 120f).floatValue();
-        indexTouchpadState = fileConfig.getEnumOrElse("indexTouchpadState", IndexTouchpad.Off);
+        snapTurnSound=fileConfig.getOrElse("snapTurnSound",true);
         fullMirror=fileConfig.getOrElse("fullMirror",false);
 
         teleportEnabled = fileConfig.getOrElse("teleportEnabled", true);
 
         immersiveControls = fileConfig.getOrElse("immersiveControls", false);
+        immersiveAttackMinSpeed=fileConfig.<Number>getOrElse("immersiveAttackMinSpeed", 1.7f).floatValue();
 
         SSAA = fileConfig.<Number>getOrElse("SSAA", 1).floatValue();
-    }
-
-    public enum IndexTouchpad {
-        Off,
-        RightForward,
-        LeftForward;
-
-
-        public Component toComponent() {
-            switch (this) {
-                case Off -> {
-                    return new TranslatableComponent("mcxr.index_touchpad.off");
-                }
-                case RightForward -> {
-                    return new TranslatableComponent("mcxr.index_touchpad.right_hand");
-                }
-                case LeftForward -> {
-                    return new TranslatableComponent("mcxr.index_touchpad.left_hand");
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + this);
-            }
-        }
-
-        public IndexTouchpad iterate() {
-            boolean next = !InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT);
-            switch (this) {
-                case Off -> {
-                    return next ? RightForward : LeftForward;
-                }
-                case RightForward -> {
-                    return next ? LeftForward : Off;
-                }
-                case LeftForward -> {
-                    return next ? Off : RightForward;
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + this);
-            }
-        }
     }
 }

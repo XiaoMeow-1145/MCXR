@@ -28,6 +28,9 @@ repositories {
     maven {
         url = uri("https://www.cursemaven.com")
     }
+    flatDir {
+        dirs("libs")
+    }
 }
 
 dependencies {
@@ -48,13 +51,15 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
-    implementation("org.lwjgl:lwjgl:3.2.3")
+    modCompileOnly("maven.modrinth:simple-voice-chat:fabric-1.19-2.2.45")
+
+    implementation("blank:lwjgl:3.2.3")
+    implementation("blank:lwjgl-glfw:3.2.3")
+
     implementation("org.joml:joml:${properties["joml_version"].toString()}")
     implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")
     implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")
-    modImplementation("com.jozufozu.flywheel:Flywheel-Fabric:${properties["flywheel_version"].toString()}")
-    modImplementation("curse.maven:create-624165:3817569")
-    include(modImplementation("com.github.Sorenon:fart:51f6a721e7")!!)
+    include(modImplementation("com.github.thejudge156:fart:ca52671672")!!)
 }
 
 sourceSets {
