@@ -1,14 +1,14 @@
 package net.sorenon.mcxr.play.gui.keyboard;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 public abstract class XrAbstract2DKeyboard {
 
-    // All the charsets avalible
-    private final char[][] _defaultCharset;
-    private final char[][] _shiftCharset;
-    private final char[][] _capsCharset;
+    // All the charsets available
+    private final char[][] defaultCharset;
+    private final char[][] shiftCharset;
+    private final char[][] capsCharset;
 
     // Static method used to remove a character from the end of a string
     public static String removeLastChar(String s) {
@@ -20,7 +20,7 @@ public abstract class XrAbstract2DKeyboard {
     public XrAbstract2DKeyboard() {
 
         // In this constructor we will use the querty charset by default
-        _defaultCharset = new char[][] {
+        defaultCharset = new char[][] {
                 new char[] {'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b'},
                 new char[] {'\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'},
                 new char[] {'\f', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '\r'},
@@ -28,7 +28,7 @@ public abstract class XrAbstract2DKeyboard {
                 new char[] {' '}
         };
 
-        _capsCharset = new char[][] {
+        capsCharset = new char[][] {
                 new char[] {'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b'},
                 new char[] {'\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'},
                 new char[] {'\f', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', '\r'},
@@ -36,7 +36,7 @@ public abstract class XrAbstract2DKeyboard {
                 new char[] {' '}
         };
 
-        _shiftCharset = new char[][] {
+        shiftCharset = new char[][] {
                 new char[] {'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b'},
                 new char[] {'\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|'},
                 new char[] {'\f', 'A', 'S', 'D', 'F', 'G', 'G', 'J', 'K', 'L', ':', '\"', '\r'},
@@ -49,9 +49,9 @@ public abstract class XrAbstract2DKeyboard {
     public XrAbstract2DKeyboard(char[][] defaultCharset, char[][] shiftCharset, char[][] capsCharset) {
 
         // This constructor allows us to use any charset that we want.
-        _defaultCharset = defaultCharset;
-        _shiftCharset = shiftCharset;
-        _capsCharset = capsCharset;
+        this.defaultCharset = defaultCharset;
+        this.shiftCharset = shiftCharset;
+        this.capsCharset = capsCharset;
 
     }
 
@@ -73,31 +73,31 @@ public abstract class XrAbstract2DKeyboard {
 
                     case '\r' ->
                         new Button(buttonX, buttonY, buttonwidth * 2, 20,
-                            new TranslatableComponent("Enter"),
+                            new TextComponent("Enter"),
                             this::returnButton);
                     case '\b' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                            new TranslatableComponent("Bksp"),
+                            new TextComponent("Bksp"),
                             this::backSpaceButton);
                     case ' ' ->
                         new Button(buttonX + 150, buttonY, buttonwidth + 100, 20,
-                            new TranslatableComponent("Space"),
+                            new TextComponent("Space"),
                             this::spaceButton);
                     case '\t' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                            new TranslatableComponent("Tab"),
+                            new TextComponent("Tab"),
                             this::tabButton);
                     case '\n' ->
                         new Button(buttonX, buttonY, buttonwidth * 2, 20,
-                            new TranslatableComponent("Shift"),
+                            new TextComponent("Shift"),
                             this::shiftButton);
                     case '\f' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                            new TranslatableComponent("Caps"),
+                            new TextComponent("Caps"),
                             this::capsButton);
                     default ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                            new TranslatableComponent(Character.toString(character)),
+                            new TextComponent(Character.toString(character)),
                             this::letterButton);
 
                 };
@@ -111,8 +111,7 @@ public abstract class XrAbstract2DKeyboard {
             rowindex ++;
         }
 
-        this.afterRender();
-
+        this.afterRender(); // this isn't a good idea, but I don't feel like testing a better solution
     }
 
     public void spaceButton(Button button) {}
@@ -134,14 +133,14 @@ public abstract class XrAbstract2DKeyboard {
     public void backSpaceButton(Button instance) {}
 
     public char[][] getDefaultCharset() {
-        return _defaultCharset;
+        return defaultCharset;
     }
 
     public char[][] getCapsCharset() {
-        return _capsCharset;
+        return capsCharset;
     }
 
     public char[][] getShiftCharset() {
-        return _shiftCharset;
+        return shiftCharset;
     }
 }

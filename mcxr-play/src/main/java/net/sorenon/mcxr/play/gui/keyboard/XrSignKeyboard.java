@@ -3,115 +3,116 @@ package net.sorenon.mcxr.play.gui.keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.gui.XrSignEditScreen;
 
 public class XrSignKeyboard extends XrAbstract2DKeyboard {
 
-    private final EditBox _textField1;
-    private final EditBox _textField2;
-    private final EditBox _textField3;
-    private final EditBox _textField4;
+    private final EditBox textField1;
+    private final EditBox textField2;
+    private final EditBox textField3;
+    private final EditBox textField4;
 
-    private EditBox _activeTextField;
+    private EditBox activeTextField;
 
-    private final XrSignEditScreen _signEditScreen;
+    private final XrSignEditScreen signEditScreen;
 
-    private boolean _shift, _caps;
+    private boolean shift, caps;
 
     public XrSignKeyboard(XrSignEditScreen signEditScreen) {
 
-        _signEditScreen = signEditScreen;
-        _textField1 = new EditBox(Minecraft.getInstance().font,
-                133, 0, 160, 10, new TranslatableComponent(""));
-        _textField2 = new EditBox(Minecraft.getInstance().font,
-                133, 10, 160, 10, new TranslatableComponent(""));
-        _textField3 = new EditBox(Minecraft.getInstance().font,
-                133, 20, 160, 10, new TranslatableComponent(""));
-        _textField4 = new EditBox(Minecraft.getInstance().font,
-                133, 30, 160, 10, new TranslatableComponent(""));
+        this.signEditScreen = signEditScreen;
+        textField1 = new EditBox(Minecraft.getInstance().font,
+                133, 0, 160, 10, new TextComponent(""));
+        textField2 = new EditBox(Minecraft.getInstance().font,
+                133, 10, 160, 10, new TextComponent(""));
+        textField3 = new EditBox(Minecraft.getInstance().font,
+                133, 20, 160, 10, new TextComponent(""));
+        textField4 = new EditBox(Minecraft.getInstance().font,
+                133, 30, 160, 10, new TextComponent(""));
 
-        _activeTextField = _textField1;
+        activeTextField = textField1;
     }
 
     @Override
     public void returnButton(Button instance) {
-        _signEditScreen.getSign().setMessage(0, new TranslatableComponent(_textField1.getValue()));
-        _signEditScreen.getSign().setMessage(1, new TranslatableComponent(_textField2.getValue()));
-        _signEditScreen.getSign().setMessage(2, new TranslatableComponent(_textField3.getValue()));
-        _signEditScreen.getSign().setMessage(3, new TranslatableComponent(_textField4.getValue()));
-        _signEditScreen.onClose();
+        signEditScreen.getSign().setMessage(0, new TextComponent(textField1.getValue()));
+        signEditScreen.getSign().setMessage(1, new TextComponent(textField2.getValue()));
+        signEditScreen.getSign().setMessage(2, new TextComponent(textField3.getValue()));
+        signEditScreen.getSign().setMessage(3, new TextComponent(textField4.getValue()));
+        signEditScreen.onClose();
     }
 
     public EditBox getTextField1() {
-        return _textField1;
+        return textField1;
     }
 
     public EditBox getTextField2() {
-        return _textField2;
+        return textField2;
     }
 
     public EditBox getTextField3() {
-        return _textField3;
+        return textField3;
     }
 
     public EditBox getTextField4() {
-        return _textField4;
+        return textField4;
     }
 
     public EditBox getActiveTextField() {
-        return _activeTextField;
+        return activeTextField;
     }
 
     public void setActiveTextField(EditBox _activeTextField) {
-        this._activeTextField = _activeTextField;
+        this.activeTextField = _activeTextField;
     }
 
     @Override
     public void backSpaceButton(Button instance) {
-        _activeTextField.setValue(removeLastChar(_activeTextField.getValue()));
+        activeTextField.setValue(removeLastChar(activeTextField.getValue()));
     }
 
     @Override
     public void spaceButton(Button button) {
-        _activeTextField.setValue(_activeTextField.getValue() + " ");
+        activeTextField.setValue(activeTextField.getValue() + " ");
     }
 
     @Override
     public void tabButton(Button button) {
-        _activeTextField.setValue(_activeTextField.getValue() + "    ");
+        activeTextField.setValue(activeTextField.getValue() + "    ");
     }
 
     @Override
     public void shiftButton(Button button) {
-        _shift = !_shift;
-        this._signEditScreen.clear();
-        renderKeyboard(_shift? this.getShiftCharset() : _caps? this.getCapsCharset() : this.getDefaultCharset(), _signEditScreen.width, _signEditScreen.height, 30);
+        shift = !shift;
+        this.signEditScreen.clear();
+        renderKeyboard(shift ? this.getShiftCharset() : caps ? this.getCapsCharset() : this.getDefaultCharset(), signEditScreen.width, signEditScreen.height, 30);
     }
 
     @Override
     public void capsButton(Button button) {
-        _caps = !_caps;
-        this._signEditScreen.clear();
-        renderKeyboard(_shift? this.getShiftCharset() : _caps? this.getCapsCharset() : this.getDefaultCharset(), _signEditScreen.width, _signEditScreen.height, 30);
+        caps = !caps;
+        this.signEditScreen.clear();
+        renderKeyboard(shift ? this.getShiftCharset() : caps ? this.getCapsCharset() : this.getDefaultCharset(), signEditScreen.width, signEditScreen.height, 30);
     }
 
     @Override
     public void letterButton(Button instance) {
-        String stringText = _activeTextField.getValue() + instance.getMessage().getString();
-        _activeTextField.setValue(stringText);
+        String stringText = activeTextField.getValue() + instance.getMessage().getString();
+        activeTextField.setValue(stringText);
     }
 
     @Override
     public void renderKey(Button key) {
-        _signEditScreen.addRenderWidget(key);
+        signEditScreen.addRenderWidget(key);
     }
 
     @Override
     public void afterRender() {
-        _signEditScreen.addRenderWidget(_textField1);
-        _signEditScreen.addRenderWidget(_textField2);
-        _signEditScreen.addRenderWidget(_textField3);
-        _signEditScreen.addRenderWidget(_textField4);
+        signEditScreen.addRenderWidget(textField1);
+        signEditScreen.addRenderWidget(textField2);
+        signEditScreen.addRenderWidget(textField3);
+        signEditScreen.addRenderWidget(textField4);
     }
 }
