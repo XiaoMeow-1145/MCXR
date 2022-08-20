@@ -34,6 +34,8 @@ dependencies {
     include(implementation("org.joml:joml:${properties["joml_version"].toString()}")!!)
     include(implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")!!)
     include(implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")!!)
+//    include(modImplementation("net.kyori:adventure-platform-fabric:${properties["adventure_version"].toString()}")!!)
+    include(implementation("org.apache.httpcomponents:httpclient:4.5.13")!!)
 }
 
 tasks {
@@ -83,6 +85,7 @@ publishing {
 }
 
 loom {
+    accessWidenerPath.set(file("src/main/resources/mcxr-core.accesswidener"))
     runs {
         create("coreClient") {
             client()

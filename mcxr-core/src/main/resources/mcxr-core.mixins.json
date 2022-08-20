@@ -4,16 +4,17 @@
   "package": "net.sorenon.mcxr.core.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BowItemMixin",
     "LivingEntityAcc",
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "ServerLoginNetworkHandlerAcc",
     "hands.EntityMixin",
     "hands.LivingEntityMixin",
-    "hands.ServerPlayerGameModeMixin",
-    "BowItemMixin"
+    "hands.ServerPlayerGameModeMixin"
   ],
   "client": [
+    "bisect.ServerSelectionListMixin",
     "hands.client.MultiPlayerGameModeMixin"
   ],
   "injectors": {
