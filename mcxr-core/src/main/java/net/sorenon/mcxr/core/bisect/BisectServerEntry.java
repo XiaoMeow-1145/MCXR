@@ -99,7 +99,7 @@ public class BisectServerEntry extends ServerSelectionList.Entry {
 //            Objects.requireNonNull(this.minecraft.font);
 //            this.minecraft.font.draw(matrices, audience.toNative(kyoriComponent), (float)(x + 32 + 3), (float)(y + 12 + 9 * i), 8421504);
 //        }
-        this.minecraft.font.draw(matrices, new TextComponent("Click here to get a server from bisect 50% off!"), (float)(x + 32 + 3), (float)(y + 12), 0xAAAAAA);
+        this.minecraft.font.draw(matrices, new TextComponent("Click here to get a server from bisect 25% off!"), (float)(x + 32 + 3), (float)(y + 12), 0xAAAAAA);
 
         this.drawIcon(matrices, x, y, this.iconLocation);
 
