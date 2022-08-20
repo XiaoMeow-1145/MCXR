@@ -1,0 +1,3 @@
+accessWidener	v1	named
+accessible field net/minecraft/client/gui/screens/multiplayer/JoinMultiplayerScreen serverSelectionList Lnet/minecraft/client/gui/screens/multiplayer/ServerSelectionList;
+accessible method net/minecraft/client/gui/components/AbstractSelectionList ensureVisible (Lnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V

@@ -14,6 +14,7 @@
     "BowItemMixin"
   ],
   "client": [
+    "bisect.ServerSelectionListMixin",
     "hands.client.MultiPlayerGameModeMixin"
   ],
   "injectors": {

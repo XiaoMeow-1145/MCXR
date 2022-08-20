@@ -24,6 +24,7 @@
       "parent": "mcxr-play"
     }
   },
+  "accessWidener": "mcxr-core.accesswidener",
   "license": "MIT",
   "icon": "assets/mcxr-core/icon.png",
   "environment": "*",
