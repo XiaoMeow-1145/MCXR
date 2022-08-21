@@ -68,6 +68,7 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
         } else if (editScreen.getParentScreen().getClass() == BisectScreen.class) {
             BisectScreen bisect = (BisectScreen) editScreen.getParentScreen();
             bisect.editBox.setValue(placeholderField.getValue());
+            Minecraft.getInstance().setScreen(editScreen.getParentScreen());
         } else {
 
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
