@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
+import net.sorenon.mcxr.core.bisect.BisectScreen;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.gui.XrEditBoxScreen;
 
@@ -57,7 +58,7 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
 
 
-        } else if (editScreen.getParentScreen().getClass() == CreativeModeInventoryScreen.class) {
+        } else if (editScreen.getParentScreen().getClass() == CreativeModeInventoryScreen.class || editScreen.getParentScreen().getClass() == BisectScreen.class) {
 
             char[] searchChars = placeholderField.getValue().toCharArray();
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
