@@ -58,7 +58,7 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
 
 
-        } else if (editScreen.getParentScreen().getClass() == CreativeModeInventoryScreen.class || editScreen.getParentScreen().getClass() == BisectScreen.class) {
+        } else if (editScreen.getParentScreen().getClass() == CreativeModeInventoryScreen.class) {
 
             char[] searchChars = placeholderField.getValue().toCharArray();
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
@@ -66,6 +66,10 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
                 Minecraft.getInstance().screen.charTyped(searchChar, 0);
             }
 
+        } else if (editScreen.getParentScreen().getClass() == BisectScreen.class) {
+            BisectScreen bisect = (BisectScreen) editScreen.getParentScreen();
+            bisect.editBox.setValue(placeholderField.getValue());
+            Minecraft.getInstance().setScreen(editScreen.getParentScreen());
         } else {
 
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
