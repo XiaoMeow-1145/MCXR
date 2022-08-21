@@ -19,6 +19,8 @@ public class BisectScreen extends Screen {
 
     private final Screen parent;
 
+    public EditBox editBox;
+
     private String text = "Enter email...";
     private int textColor = 0xA0A0A0;
 
@@ -29,7 +31,7 @@ public class BisectScreen extends Screen {
 
     @Override
     protected void init() {
-        var editBox = this.addRenderableWidget(new EditBox(this.minecraft.font, this.width / 2 - 100, this.height / 4 + 48, 200, 20, Component.literal("Enter email...")) {
+        editBox = this.addRenderableWidget(new EditBox(this.minecraft.font, this.width / 2 - 100, this.height / 4 + 48, 200, 20, Component.literal("Enter email...")) {
             @Override
             public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
