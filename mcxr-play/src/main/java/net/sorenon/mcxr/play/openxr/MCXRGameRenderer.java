@@ -335,6 +335,13 @@ public class MCXRGameRenderer {
                 }
             }
             swapchainFramebuffer.unbindWrite();
+
+            // Start hacky fix for ANGLE
+            ByteBuffer pixels = stack.calloc(swapchian.width * swapchian.height * 4);
+            GL33.glBindTexture(GL33.GL_TEXTURE_2D, swapchain.renderTarget.getColorTextureId());
+            GL33.glGetTexImage(GL33.GL_TEXTURE_2D, 0, GL_RGBA, pixels);
+            GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
+            // End hacky fix for ANGLE
         }
 
         blitToBackbuffer(swapchain.renderTarget);

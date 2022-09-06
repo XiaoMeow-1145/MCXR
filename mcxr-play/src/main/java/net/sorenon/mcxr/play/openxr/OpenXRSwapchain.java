@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.rendering.XrRenderTarget;
+import net.sorenon.mcxr.play.MCXRNativeLoad;
 import org.lwjgl.openxr.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -55,11 +56,14 @@ public class OpenXRSwapchain implements AutoCloseable {
             this.leftFramebuffers = new XrRenderTarget[imageCount];
             this.rightFramebuffers = new XrRenderTarget[imageCount];
 
+            MCXRNativeLoad.setImageCount(imageCount);
+
             for (int i = 0; i < imageCount; i++) {
                 var openxrImage = swapchainImageBuffer.get(i);
                 arrayImages[i] = openxrImage.image();
                 leftFramebuffers[i] = new XrRenderTarget(width, height, arrayImages[i], 0);
                 rightFramebuffers[i] = new XrRenderTarget(width, height, arrayImages[i], 1);
+                MCXRNativeLoad.setImageHandle(arrayImages[i], i);
             }
 
             renderTarget = new TextureTarget((int) (width * PlayOptions.SSAA), (int) (height * PlayOptions.SSAA), true, Minecraft.ON_OSX);
