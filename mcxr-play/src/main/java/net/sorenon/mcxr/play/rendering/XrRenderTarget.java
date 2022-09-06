@@ -38,7 +38,7 @@ public class XrRenderTarget extends TextureTarget {
             this.width = width;
             this.height = height;
             this.frameBufferId = GlStateManager.glGenFramebuffers();
-            this.colorAttachment = TextureUtil.generateTextureId();
+            this.colorAttachmentId = TextureUtil.generateTextureId();
             if (this.useDepth) {
                 this.depthBufferId = TextureUtil.generateTextureId();
                 GlStateManager._bindTexture(this.depthBufferId);
@@ -51,12 +51,12 @@ public class XrRenderTarget extends TextureTarget {
             }
 
             this.setFilterMode(9728);
-            GlStateManager._bindTexture(this.colorAttachment);
+            GlStateManager._bindTexture(this.colorAttachmentId);
             GlStateManager._texParameter(3553, 10242, 33071);
             GlStateManager._texParameter(3553, 10243, 33071);
             GlStateManager._texImage2D(3553, 0, 32856, this.textureWidth, this.textureHeight, 0, 6408, 5121, (IntBuffer)null);
             GlStateManager._glBindFramebuffer(36160, this.frameBufferId);
-            GlStateManager._glFramebufferTexture2D(36160, 36064, 3553, this.colorAttachment, 0);
+            GlStateManager._glFramebufferTexture2D(36160, 36064, 3553, this.colorAttachmentId, 0);
             if (this.useDepth) {
                 GlStateManager._glFramebufferTexture2D(36160, 36096, 3553, this.depthBufferId, 0);
             }

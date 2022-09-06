@@ -2,6 +2,7 @@ package net.sorenon.mcxr.play.openxr;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
+import org.lwjgl.opengl.GL33;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
@@ -59,6 +60,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.Struct;
 
 import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.system.MemoryStack.stackCallocInt;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -335,11 +337,10 @@ public class MCXRGameRenderer {
                 }
             }
             swapchainFramebuffer.unbindWrite();
-
             // Start hacky fix for ANGLE
             ByteBuffer pixels = stack.calloc(swapchian.width * swapchian.height * 4);
             GL33.glBindTexture(GL33.GL_TEXTURE_2D, swapchain.renderTarget.getColorTextureId());
-            GL33.glGetTexImage(GL33.GL_TEXTURE_2D, 0, GL_RGBA, pixels);
+            GL33.glGetTexImage(GL33.GL_TEXTURE_2D, 0, GL33.GL_RGBA, pixels);
             GL33.glBindTexture(GL33.GL_TEXTURE_2D, 0);
             // End hacky fix for ANGLE
         }
