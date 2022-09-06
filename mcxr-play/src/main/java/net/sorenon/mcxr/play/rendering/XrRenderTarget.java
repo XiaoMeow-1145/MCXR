@@ -27,45 +27,4 @@ public class XrRenderTarget extends TextureTarget {
             return (float) Math.pow((f + 0.055f) / 1.055f, 2.4f);
         }
     }
-
-    @Override
-    public void createBuffers(int width, int height, boolean getError) {
-        RenderSystem.assertOnRenderThreadOrInit();
-        int i = RenderSystem.maxSupportedTextureSize();
-        if (width > 0 && width <= i && height > 0 && height <= i) {
-            this.viewWidth = width;
-            this.viewHeight = height;
-            this.width = width;
-            this.height = height;
-            this.frameBufferId = GlStateManager.glGenFramebuffers();
-            ((RenderTargetAcc) this).setColorTextureId(TextureUtil.generateTextureId());
-            if (this.useDepth) {
-                this.depthBufferId = TextureUtil.generateTextureId();
-                GlStateManager._bindTexture(this.depthBufferId);
-                GlStateManager._texParameter(3553, 10241, 9728);
-                GlStateManager._texParameter(3553, 10240, 9728);
-                GlStateManager._texParameter(3553, 34892, 0);
-                GlStateManager._texParameter(3553, 10242, 33071);
-                GlStateManager._texParameter(3553, 10243, 33071);
-                GlStateManager._texImage2D(3553, 0, 6402, this.width, this.height, 0, 6402, 5126, (IntBuffer) null);
-            }
-
-            this.setFilterMode(9728);
-            GlStateManager._bindTexture(this.getColorAttachmentId());
-            GlStateManager._texParameter(3553, 10242, 33071);
-            GlStateManager._texParameter(3553, 10243, 33071);
-            GlStateManager._texImage2D(3553, 0, 32856, this.textureWidth, this.textureHeight, 0, 6408, 5121, (IntBuffer)null);
-            GlStateManager._glBindFramebuffer(36160, this.frameBufferId);
-            GlStateManager._glFramebufferTexture2D(36160, 36064, 3553, this.getColorAttachmentId(), 0);
-            if (this.useDepth) {
-                GlStateManager._glFramebufferTexture2D(36160, 36096, 3553, this.depthBufferId, 0);
-            }
-
-            this.checkStatus();
-            this.clear(getError);
-            this.unbindRead();
-        } else {
-            throw new IllegalArgumentException("Window " + width + "x" + height + " size out of bounds (max. size: " + i + ")");
-        }
-    }
 }
