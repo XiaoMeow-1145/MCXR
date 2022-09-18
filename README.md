@@ -34,7 +34,7 @@ Alternatively, join the Subreddit [here.](https://www.reddit.com/r/MinecraftXR/)
 | Vr Addon Support            | ⛔                               | 🚧In development             | 🚧In development          |
 | Thirdparty Mod Intergration | N/A                             | ⛔                             | 🚧In development         |
 | Immersive UI                | ⛔                               | ⛔                             | 🚧In development        |
-| Immersive Controls          | ⛔                               | ✅                             | 🚧In development        |
+| Immersive Controls          | ⛔                               | ✅                             | 🚧Could be improved        |
 | Open Source                 | ⛔                               | ✅                             | ✅                      |
 | Versions                    | N/A                             | 1.7.10, and 1.10 through [1.18](https://github.com/jrbudda/Vivecraft_118/releases) | 1.18                     |
 | Standalone Quest Support    | ⛔                               | ⛔                           | ✅[QuestCraft](https://sidequestvr.com/app/7150/questcraft)|
