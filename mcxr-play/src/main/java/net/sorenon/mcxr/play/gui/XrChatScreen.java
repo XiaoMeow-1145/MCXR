@@ -5,14 +5,14 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.gui.keyboard.XrChatKeyboard;
+import org.jetbrains.annotations.NotNull;
 
 public class XrChatScreen extends ChatScreen {
 
-    private XrChatKeyboard _keyboard;
+    private XrChatKeyboard keyboard;
 
     public XrChatScreen(String string) {
         super(string);
-
     }
 
     public void clear() {
@@ -29,13 +29,13 @@ public class XrChatScreen extends ChatScreen {
         super.init();
         
         if (!PlayOptions.xrUninitialized)
-            _keyboard = new XrChatKeyboard(this.input, this, 30);
-            _keyboard.renderKeyboard(_keyboard.getDefaultCharset(), this.width, this.height, 30);
+            keyboard = new XrChatKeyboard(this.input, this, 30);
+        keyboard.renderKeyboard(keyboard.getDefaultCharset(), this.width, this.height, 30);
 
     }
 
     @Override
-    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull PoseStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
     }
