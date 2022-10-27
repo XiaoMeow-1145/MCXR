@@ -85,7 +85,7 @@ public class OpenXRSystem {
                     eglContextPtr
             );
         } catch(Exception e)  {
-            System.out.println(e);
+            e.printStacktrace();
         }
         throw new IllegalStateException("Could not get the classes needed by reflection!");
     }
