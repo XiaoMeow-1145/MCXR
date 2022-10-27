@@ -80,9 +80,9 @@ public class OpenXRSystem {
             return XrGraphicsBindingOpenGLESAndroidKHR.calloc(stack).set(
                     KHROpenglEsEnable.XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR,
                     NULL,
-                    eglDisplayPtr,
-                    eglConfigPtr,
-                    eglContextPtr
+                    memGetAddress(eglDisplayPtr),
+                    memGetAddress(eglConfigPtr),
+                    memGetAddress(eglContextPtr)
             );
         } catch(Exception e)  {
             System.out.println(e);
