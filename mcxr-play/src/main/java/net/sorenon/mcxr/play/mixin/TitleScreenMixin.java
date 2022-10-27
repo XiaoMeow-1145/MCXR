@@ -56,16 +56,16 @@ public abstract class TitleScreenMixin extends Screen {
                     OpenXRSystem system = OPEN_XR.session.system;
                     String sys = system.systemName;
 
-                    // Since we can assume users are on a quest 1 or 2, we will set our video settings based on those two options.
-                    if (sys.equalsIgnoreCase("oculus quest2")) {
+                    // Since we can assume users are on a yvr or yvr 2, we will set our video settings based on those two options.
+                    if (sys.equalsIgnoreCase("yvr   yvr2")) {
 
-                        // quest 2 gets 6 render distance 8 sim distance.
+                        // yvr 2 gets 6 render distance 8 sim distance.
                         this.minecraft.options.renderDistance = 6;
                         this.minecraft.options.simulationDistance = 8;
 
-                    } else if (sys.equalsIgnoreCase("oculus quest")) {
+                    } else if (sys.equalsIgnoreCase("yvr    yvr2")) {
 
-                        // quest 1 gets 2 render distance and 4 sim distance
+                        // yvr 1 gets 2 render distance and 4 sim distance
                         this.minecraft.options.renderDistance = 4;
                         this.minecraft.options.simulationDistance = 6;
 

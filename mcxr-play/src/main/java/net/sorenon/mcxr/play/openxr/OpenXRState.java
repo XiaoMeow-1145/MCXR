@@ -118,7 +118,7 @@ public class OpenXRState {
             }
 
             if (missingOpenGL) {
-                throw new XrException(0, "OpenXR runtime does not support OpenGLES, try using Quest instead");
+                throw new XrException(0, "OpenXR runtime does not support OpenGLES, try using YVR instead");
             }
 
             XrApplicationInfo applicationInfo = XrApplicationInfo.malloc(stack);
