@@ -3,26 +3,19 @@ package net.sorenon.mcxr.play.openxr;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.*;
+import org.lwjgl.egl.EGL15;
 import org.lwjgl.openxr.*;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.Platform;
 import org.lwjgl.system.Struct;
-import org.lwjgl.system.linux.X11;
-import org.lwjgl.system.windows.User32;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
-import net.minecraft.client.Minecraft;
+import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GLX13.*;
-import static org.lwjgl.system.Checks.check;
-import static org.lwjgl.system.JNI.invokePP;
+import static org.lwjgl.egl.EGL10.*;
+import static org.lwjgl.egl.EGL12.EGL_RENDERABLE_TYPE;
+import static org.lwjgl.egl.EGL15.EGL_OPENGL_ES3_BIT;
 import static org.lwjgl.system.MemoryStack.stackInts;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.*;
-
-import com.mojang.blaze3d.platform.Window;
 
 public class OpenXRSystem {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -69,24 +62,26 @@ public class OpenXRSystem {
     }
 
     public Struct createOpenGLBinding(MemoryStack stack) {
-        try {
-            Class<?> clazz = Class.forName("org.lwjgl.glfw.CallbackBridge");
-            Method eglDisplay = clazz.getDeclaredMethod("getEGLDisplayPtr");
-            Method eglConfig = clazz.getDeclaredMethod("getEGLConfigPtr");
-            Method eglContext = clazz.getDeclaredMethod("getEGLContextPtr");
-            long eglDisplayPtr = (long) eglDisplay.invoke(null);
-            long eglConfigPtr = (long) eglConfig.invoke(null);
-            long eglContextPtr = (long) eglContext.invoke(null);
-            return XrGraphicsBindingOpenGLESAndroidKHR.calloc(stack).set(
-                    KHROpenglEsEnable.XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR,
-                    NULL,
-                    memGetAddress(eglDisplayPtr),
-                    memGetAddress(eglConfigPtr),
-                    memGetAddress(eglContextPtr)
-            );
-        } catch(Exception e)  {
-            System.out.println(e);
-        }
-        throw new IllegalStateException("Could not get the classes needed by reflection!");
+        PointerBuffer buf = stack.callocPointer(1);
+        IntBuffer iBuf = stack.callocInt(1);
+        IntBuffer attribs = stackInts(
+                EGL_RED_SIZE, 8,
+                EGL_GREEN_SIZE, 8,
+                EGL_BLUE_SIZE, 8,
+                EGL_ALPHA_SIZE, 8,
+                // Minecraft required on initial 24
+                EGL_DEPTH_SIZE, 24,
+                EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
+                EGL_NONE
+        );
+        long disp = EGL15.eglGetCurrentDisplay();
+        EGL15.eglChooseConfig(disp, attribs, buf, iBuf);
+        return XrGraphicsBindingOpenGLESAndroidKHR.calloc(stack).set(
+                KHROpenglEsEnable.XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR,
+                NULL,
+                disp,
+                buf.get(),
+                EGL15.eglGetCurrentContext()
+        );
     }
 }

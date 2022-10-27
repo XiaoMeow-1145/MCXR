@@ -41,48 +41,5 @@ public class HandsActionSet extends ActionSet {
                         new Pair<>(aim, "/user/hand/right/input/aim/pose")
                 )
         );
-
-        if (!MCXRPlayClient.OPEN_XR_STATE.instance.runtimeName.contains("Oculus")) {
-
-            map.computeIfAbsent("/interaction_profiles/valve/index_controller", aLong -> new ArrayList<>()).addAll(
-                    List.of(
-                            new Pair<>(grip, "/user/hand/left/input/grip/pose"),
-                            new Pair<>(grip, "/user/hand/right/input/grip/pose"),
-                            new Pair<>(aim, "/user/hand/left/input/aim/pose"),
-                            new Pair<>(aim, "/user/hand/right/input/aim/pose")
-                    )
-            );
-            map.computeIfAbsent("/interaction_profiles/microsoft/motion_controller", aLong -> new ArrayList<>()).addAll(
-                    List.of(
-                            new Pair<>(grip, "/user/hand/left/input/grip/pose"),
-                            new Pair<>(grip, "/user/hand/right/input/grip/pose"),
-                            new Pair<>(aim, "/user/hand/left/input/aim/pose"),
-                            new Pair<>(aim, "/user/hand/right/input/aim/pose")
-                    )
-            );
-        }
-
-
-        if (MCXRPlayClient.OPEN_XR_STATE.instance.handle.getCapabilities().XR_EXT_hp_mixed_reality_controller) {
-            map.computeIfAbsent("/interaction_profiles/hp/mixed_reality_controller", aLong -> new ArrayList<>()).addAll(
-                    List.of(
-                            new Pair<>(grip, "/user/hand/left/input/grip/pose"),
-                            new Pair<>(grip, "/user/hand/right/input/grip/pose"),
-                            new Pair<>(aim, "/user/hand/left/input/aim/pose"),
-                            new Pair<>(aim, "/user/hand/right/input/aim/pose")
-                    )
-            );
-        }
-        if (MCXRPlayClient.OPEN_XR_STATE.instance.handle.getCapabilities().XR_HTC_vive_cosmos_controller_interaction) {
-            map.computeIfAbsent("/interaction_profiles/htc/vive_cosmos_controller", aLong -> new ArrayList<>()).addAll(
-                    List.of(
-                            new Pair<>(grip, "/user/hand/left/input/grip/pose"),
-                            new Pair<>(grip, "/user/hand/right/input/grip/pose"),
-                            new Pair<>(aim, "/user/hand/left/input/aim/pose"),
-                            new Pair<>(aim, "/user/hand/right/input/aim/pose")
-                    )
-            );
-        }
-
     }
 }
