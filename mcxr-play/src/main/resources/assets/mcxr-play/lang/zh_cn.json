@@ -1,0 +1,56 @@
+{
+  "mcxr.options.title": "MCXR 選項",
+  "mcxr.options.uninitialize": "關閉 MCXR",
+  "mcxr.options.initialize": "初始化 MCXR",
+  "mcxr.options.pause": "暫停 VR",
+  "mcxr.options.unpause": "取消暫停 VR",
+  "mcxr.options.walk_direction": "步行方向: %s",
+  "mcxr.options.swim_direction": "游泳方向: %s",
+  "mcxr.options.fly_direction": "飛行方向: %s",
+  "mcxr.move_direction.head" : "頭",
+  "mcxr.move_direction.right_hand" : "右手",
+  "mcxr.move_direction.left_hand" : "左手",
+  "mcxr.options.enable_snap_turning": "啟用急轉彎",
+  "mcxr.options.enable_smooth_turning": "啟用平滑轉彎",
+  "mcxr.options.lock_playerheight" : "鎖定玩家身高",
+  "mcxr.options.unlock_playerheight" : "解鎖玩家身高",
+  "mcxr.options.index_touchpad": "索引觸摸板: %s",
+  "mcxr.options_disable_immersive_controls": "禁用沉浸式控制\n",
+  "mcxr.options_enable_immersive_controls": "啟用沉浸式控制",
+  "mcxr.index_touchpad.off": "離開",
+  "mcxr.index_touchpad.right_hand": "正確的",
+  "mcxr.index_touchpad.left_hand": "剩下",
+
+  "mcxr.menu.reload": "重新加載耳機",
+  "mcxr.menu.session_not_created": "找不到耳機:",
+
+  "openxr.form_factor.1": "頭戴式顯示器",
+  "openxr.form_factor.2": "頭戴式顯示器",
+
+  "mcxr.error.form_factor_unavailable": "該設備當前不可用, 例如 未插入或關閉",
+
+  "mcxr.actionset.vanilla_gameplay": "香草遊戲",
+  "mcxr.action.attack": "攻擊",
+  "mcxr.action.use": "利用",
+  "mcxr.action.inventory": "存貨 (按住暫停)",
+  "mcxr.action.jump": "跳",
+  "mcxr.action.move": "移動",
+  "mcxr.action.turn": "轉動",
+  "mcxr.action.hotbar": "快捷欄",
+    "mcxr.action.sneak": "潛行",
+  "mcxr.action.sprint": "短跑",
+  "mcxr.action.reset_pos": "Reset Pos",
+
+  "mcxr.actionset.gui": "圖形用戶界面",
+  "mcxr.action.close": "關",
+  "mcxr.action.pickup": "撿起 / 降低",
+  "mcxr.action.split": "分裂",
+  "mcxr.action.quick_move": "快速移動",
+  "mcxr.action.scroll": "滾動",
+
+  "mcxr.actionset.hands": "手",
+  "mcxr.action.aim": "瞄準姿勢",
+  "mcxr.action.grip": "握姿",
+
+  "mcxr.quickmenu": "快捷菜單"
+}
