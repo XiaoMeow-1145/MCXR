@@ -2,7 +2,7 @@ package net.sorenon.mcxr.play.gui.keyboard;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 
 public abstract class XrAbstract2DKeyboard {
 
@@ -74,31 +74,31 @@ public abstract class XrAbstract2DKeyboard {
 
                     case '\r' ->
                         new Button(buttonX, buttonY, buttonwidth * 2, 20,
-                                new TranslatableComponent("Enter"),
+                                Component.translatable("Enter"),
                             this::returnButton);
                     case '\b' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                                new TranslatableComponent("Bksp"),
+                                Component.translatable("Bksp"),
                             this::backSpaceButton);
                     case ' ' ->
                         new Button(buttonX + 150, buttonY, buttonwidth + 100, 20,
-                                new TranslatableComponent("Space"),
+                                Component.translatable("Space"),
                             this::spaceButton);
                     case '\t' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                                new TranslatableComponent("Tab"),
+                                Component.translatable("Tab"),
                             this::tabButton);
                     case '\n' ->
                         new Button(buttonX, buttonY, buttonwidth * 2, 20,
-                                new TranslatableComponent("Shift"),
+                                Component.translatable("Shift"),
                             this::shiftButton);
                     case '\f' ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                                new TranslatableComponent("Caps"),
+                                Component.translatable("Caps"),
                             this::capsButton);
                     default ->
                         new Button(buttonX, buttonY, buttonwidth, 20,
-                                new TranslatableComponent(Character.toString(character)),
+                                Component.translatable(Character.toString(character)),
                             this::letterButton);
 
                 };

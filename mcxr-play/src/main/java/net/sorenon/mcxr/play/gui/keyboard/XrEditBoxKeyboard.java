@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.gui.XrEditBoxScreen;
 
 public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
@@ -29,7 +28,7 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
 
         placeholderField = new EditBox(Minecraft.getInstance().font,
                 133, 22, textField.getWidth(), textField.getHeight(),
-                textField, new TranslatableComponent(""));
+                textField, Component.translatable(""));
 
         this.buttonWidth = buttonWidth;
     }
@@ -52,7 +51,7 @@ public class XrEditBoxKeyboard extends XrAbstract2DKeyboard {
         } else if (editScreen.getParentScreen().getClass() == JoinMultiplayerScreen.class) {
 
             ServerData server = new ServerData(placeholderField.getValue(), placeholderField.getValue(), false);
-            editScreen.getServers().add(server);
+            editScreen.getServers().add(server, false);
             editScreen.getServers().save();
             Minecraft.getInstance().setScreen(editScreen.getParentScreen());
 

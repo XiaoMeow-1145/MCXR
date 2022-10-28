@@ -7,8 +7,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Vec3i;
@@ -407,7 +405,7 @@ public final class XrInput {
             if (!actionSet.quickmenu.currentState) {
                 Minecraft client = Minecraft.getInstance();
                 if (client.screen == null) {
-                    client.setScreen(new QuickMenu(new TranslatableComponent("mcxr.quickmenu")));
+                    client.setScreen(new QuickMenu(Component.translatable("mcxr.quickmenu")));
                 }
             }
         }

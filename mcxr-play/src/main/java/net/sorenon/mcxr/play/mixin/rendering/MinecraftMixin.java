@@ -342,7 +342,7 @@ public abstract class MinecraftMixin extends ReentrantBlockableEventLoop<Runnabl
 
         while (Util.getMillis() >= this.lastTime + 1000L) {
             fps = this.frames;
-            this.fpsString = String.format("T: %s%s%s%s B: %d", (double) this.options.framerateLimit, this.options.enableVsync ? " vsync" : "", this.options.graphicsMode.toString(), this.options.renderClouds == CloudStatus.OFF ? "" : (this.options.renderClouds == CloudStatus.FAST ? " fast-clouds" : " fancy-clouds"), this.options.biomeBlendRadius);
+            this.fpsString = String.format("T: %s%s%s%s B: %d", (double) this.options.framerateLimit().get(), this.options.enableVsync().get() ? " vsync" : "", this.options.graphicsMode().toString(), this.options.cloudStatus().get() == CloudStatus.OFF ? "" : (this.options.cloudStatus().get() == CloudStatus.FAST ? " fast-clouds" : " fancy-clouds"), this.options.biomeBlendRadius().get());
             this.lastTime += 1000L;
             this.frames = 0;
         }

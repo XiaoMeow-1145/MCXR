@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.sorenon.mcxr.play.gui.XrSignEditScreen;
 
 public class XrSignKeyboard extends XrAbstract2DKeyboard {
@@ -24,23 +23,23 @@ public class XrSignKeyboard extends XrAbstract2DKeyboard {
 
         this.signEditScreen = signEditScreen;
         textField1 = new EditBox(Minecraft.getInstance().font,
-               (signEditScreen.width /3) - 160, 0, 160, 10, new TranslatableComponent(""));
+               (signEditScreen.width /3) - 160, 0, 160, 10, Component.translatable(""));
         textField2 = new EditBox(Minecraft.getInstance().font,
-               (signEditScreen.width /3) - 160, 10, 160, 10, new TranslatableComponent(""));
+               (signEditScreen.width /3) - 160, 10, 160, 10, Component.translatable(""));
         textField3 = new EditBox(Minecraft.getInstance().font,
-               (signEditScreen.width /3) - 160, 20, 160, 10, new TranslatableComponent(""));
+               (signEditScreen.width /3) - 160, 20, 160, 10, Component.translatable(""));
         textField4 = new EditBox(Minecraft.getInstance().font,
-                (signEditScreen.width /3) - 160, 30, 160, 10, new TranslatableComponent(""));
+                (signEditScreen.width /3) - 160, 30, 160, 10, Component.translatable(""));
 
         activeTextField = textField1;
     }
 
     @Override
     public void returnButton(Button instance) {
-        signEditScreen.getSign().setMessage(0, new TranslatableComponent(textField1.getValue()));
-        signEditScreen.getSign().setMessage(1, new TranslatableComponent(textField2.getValue()));
-        signEditScreen.getSign().setMessage(2, new TranslatableComponent(textField3.getValue()));
-        signEditScreen.getSign().setMessage(3, new TranslatableComponent(textField4.getValue()));
+        signEditScreen.getSign().setMessage(0, Component.translatable(textField1.getValue()));
+        signEditScreen.getSign().setMessage(1, Component.translatable(textField2.getValue()));
+        signEditScreen.getSign().setMessage(2, Component.translatable(textField3.getValue()));
+        signEditScreen.getSign().setMessage(3, Component.translatable(textField4.getValue()));
         signEditScreen.onClose();
     }
 

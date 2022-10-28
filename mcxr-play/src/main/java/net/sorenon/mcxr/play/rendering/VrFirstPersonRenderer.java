@@ -571,7 +571,7 @@ public class VrFirstPersonRenderer {
                         }
                     }
 
-                    Minecraft.getInstance().getItemInHandRenderer().renderItem(
+                    Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(
                             player,
                             stack,
                             handIndex == 0 ? THIRD_PERSON_LEFT_HAND : ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND,
