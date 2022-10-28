@@ -138,7 +138,7 @@ public class OpenXRSession implements AutoCloseable {
                     XR10.XR_TYPE_SWAPCHAIN_CREATE_INFO,
                     NULL,
                     0,
-                    XR10.XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT,
+                    (XR10.XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT | XR10.XR_SWAPCHAIN_USAGE_SAMPLED_BIT),
                     chosenFormat,
                     1,
                     viewConfig.recommendedImageRectWidth(),
