@@ -1,14 +1,21 @@
 package net.sorenon.mcxr.play.mixin.rendering;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.sorenon.mcxr.play.MCXRPlayClient;
+import net.sorenon.mcxr.play.compat.ClientDataHolder;
 import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
 import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
 import net.sorenon.mcxr.play.rendering.MCXRCamera;
@@ -27,10 +34,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = GameRenderer.class, priority = 10_000)
-public abstract class GameRendererMixin {
+public abstract class GameRendererMixin{
 
     @Unique
     private static final MCXRGameRenderer XR_RENDERER = MCXRPlayClient.MCXR_GAME_RENDERER;
+    private static final Object DATA_HOLDER = ClientDataHolder.getInstance();
 
     @Shadow
     public abstract float getRenderDistance();
@@ -142,4 +150,128 @@ public abstract class GameRendererMixin {
             ci.cancel();
         }
     }
-}
+
+    @Override
+    public boolean isInMenuRoom() {
+        return this.minecraft.level == null || this.minecraft.screen instanceof WinScreen || ClientDataHolder.getInstance().integratedServerLaunchInProgress || this.minecraft.getOverlay() != null;
+    }
+
+    private void renderGuiLayer(float par1, boolean depthAlways, PoseStack pMatrix) {
+            if (this.minecraft.screen != null || !this.minecraft.options.hideGui) {
+                if (!RadialHandler.isShowing()) {
+                    boolean flag = this.isInMenuRoom();
+
+                    PoseStack poseStack = RenderSystem.getModelViewStack();
+                    poseStack.pushPose();
+                    poseStack.setIdentity();
+                    RenderSystem.applyModelViewMatrix();
+
+                    if (flag) {
+                        pMatrix.pushPose();
+                        Vec3 eye = GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render
+                                .getEye(GameRendererMixin.DATA_HOLDER.currentPass).getPosition();
+                        pMatrix.translate((GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.x - eye.x),
+                                (GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.y - eye.y),
+                                (GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.z - eye.z));
+
+                        this.renderJrbuddasAwesomeMainMenuRoomNew(pMatrix);
+                        pMatrix.popPose();
+                    }
+
+                    pMatrix.pushPose();
+                    Vec3 vec31 = GuiHandler.applyGUIModelView(GameRendererMixin.DATA_HOLDER.currentPass, pMatrix);
+                    GuiHandler.guiFramebuffer.bindRead();
+                    RenderSystem.disableCull();
+                    RenderSystem.enableTexture();
+                    RenderSystem.setShaderTexture(0, GuiHandler.guiFramebuffer.getColorTextureId());
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                                GlStateManager.SourceFactor.ONE_MINUS_DST_ALPHA, GlStateManager.DestFactor.ONE);
+                    if (depthAlways) {
+                        RenderSystem.depthFunc(519);
+                    } else {
+                        RenderSystem.depthFunc(515);
+                    }
+
+                    RenderSystem.depthMask(true);
+                    RenderSystem.enableDepthTest();
+
+                    // RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.depthFunc(515);
+                    RenderSystem.enableDepthTest();
+                    // RenderSystem.defaultAlphaFunc();
+                    RenderSystem.defaultBlendFunc();
+                    RenderSystem.enableCull();
+                    pMatrix.popPose();
+
+                    poseStack.popPose();
+                    RenderSystem.applyModelViewMatrix();
+                }
+            }
+        }
+
+        private void renderJrbuddasAwesomeMainMenuRoomNew(PoseStack pMatrixStack) {
+            int i = 4;
+            float f = 2.5F;
+            float f1 = 1.3F;
+            float[] afloat = GameRendererMixin.DATA_HOLDER.vr.getPlayAreaSize();
+            if (afloat == null)
+                afloat = new float[] { 2, 2 };
+
+            BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+            RenderSystem.depthFunc(519);
+            RenderSystem.depthMask(true); //TODO temp fix
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableTexture();
+            RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            pMatrixStack.pushPose();
+            float f2 = afloat[0] + f1;
+            float f3 = afloat[1] + f1;
+            pMatrixStack.translate(-f2 / 2.0F, 0.0F, -f3 / 2.0F);
+
+            Matrix4f matrix4f = pMatrixStack.last().pose();
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL);
+
+            float a, b, c, d;
+            a = b = c = d = 0.8f;
+
+            bufferbuilder.vertex(matrix4f, 0, 0, 0).uv(0, 0).color(a, b, c, d).normal(0, 1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, 0, f3).uv(0, i * f3).color(a, b, c, d).normal(0, 1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, 0, f3).uv(i * f2, i * f3).color(a, b, c, d).normal(0, 1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, 0, 0).uv(i * f2, 0).color(a, b, c, d).normal(0, 1, 0).endVertex();
+
+            bufferbuilder.vertex(matrix4f, 0, f, f3).uv(0, 0).color(a, b, c, d).normal(0, -1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, f, 0).uv(0, i * f3).color(a, b, c, d).normal(0, -1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, 0).uv(i * f2, i * f3).color(a, b, c, d).normal(0, -1, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, f3).uv(i * f2, 0).color(a, b, c, d).normal(0, -1, 0).endVertex();
+
+            bufferbuilder.vertex(matrix4f, 0, 0, 0).uv(0, 0).color(a, b, c, d).normal(1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, f, 0).uv(0, i * f).color(a, b, c, d).normal(1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, f, f3).uv(i * f3, i * f).color(a, b, c, d).normal(1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, 0, f3).uv(i * f3, 0).color(a, b, c, d).normal(1, 0, 0).endVertex();
+
+            bufferbuilder.vertex(matrix4f, f2, 0, 0).uv(0, 0).color(a, b, c, d).normal(-1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, 0, f3).uv(i * f3, 0).color(a, b, c, d).normal(-1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, f3).uv(i * f3, i * f).color(a, b, c, d).normal(-1, 0, 0).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, 0).uv(0, i * f).color(a, b, c, d).normal(-1, 0, 0).endVertex();
+
+            bufferbuilder.vertex(matrix4f, 0, 0, 0).uv(0, 0).color(a, b, c, d).normal(0, 0, 1).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, 0, 0).uv(i * f2, 0).color(a, b, c, d).normal(0, 0, 1).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, 0).uv(i * f2, i * f).color(a, b, c, d).normal(0, 0, 1).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, f, 0).uv(0, i * f).color(a, b, c, d).normal(0, 0, 1).endVertex();
+
+            bufferbuilder.vertex(matrix4f, 0, 0, f3).uv(0, 0).color(a, b, c, d).normal(0, 0, -1).endVertex();
+            bufferbuilder.vertex(matrix4f, 0, f, f3).uv(0, i * f).color(a, b, c, d).normal(0, 0, -1).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, f, f3).uv(i * f2, i * f).color(a, b, c, d).normal(0, 0, -1).endVertex();
+            bufferbuilder.vertex(matrix4f, f2, 0, f3).uv(i * f2, 0).color(a, b, c, d).normal(0, 0, -1).endVertex();
+
+            bufferbuilder.end();
+            BufferUploader.end(bufferbuilder);
+            pMatrixStack.popPose();
+
+        }
+    }
