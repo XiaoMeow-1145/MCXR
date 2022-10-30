@@ -27,6 +27,8 @@ public class GameMenuMixin extends Screen {
         super(component);
     }
 
+
+
     @Inject(at=@At("RETURN"), method = "createPauseMenu")
     private void addResetButton(CallbackInfo ci) {
         this.addRenderableWidget(

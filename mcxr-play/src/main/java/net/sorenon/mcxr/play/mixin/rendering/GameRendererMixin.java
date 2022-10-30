@@ -1,6 +1,5 @@
 package net.sorenon.mcxr.play.mixin.rendering;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
@@ -9,19 +8,17 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.sorenon.mcxr.play.MCXRPlayClient;
-import net.sorenon.mcxr.play.compat.ClientDataHolder;
-import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
-import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
-import net.sorenon.mcxr.play.rendering.MCXRCamera;
-import net.sorenon.mcxr.play.rendering.RenderPass;
 import net.sorenon.mcxr.play.accessor.Matrix4fExt;
+import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
+import net.sorenon.mcxr.play.rendering.MCXRCamera;
+import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
+import net.sorenon.mcxr.play.rendering.RenderPass;
 import org.joml.Quaternionf;
+import org.lwjgl.opengl.GL11;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,7 +35,6 @@ public abstract class GameRendererMixin{
 
     @Unique
     private static final MCXRGameRenderer XR_RENDERER = MCXRPlayClient.MCXR_GAME_RENDERER;
-    private static final Object DATA_HOLDER = ClientDataHolder.getInstance();
 
     @Shadow
     public abstract float getRenderDistance();
@@ -151,71 +147,25 @@ public abstract class GameRendererMixin{
         }
     }
 
-    @Override
-    public boolean isInMenuRoom() {
-        return this.minecraft.level == null || this.minecraft.screen instanceof WinScreen || ClientDataHolder.getInstance().integratedServerLaunchInProgress || this.minecraft.getOverlay() != null;
-    }
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getWindow()Lcom/mojang/blaze3d/platform/Window;", shift = At.Shift.BEFORE, ordinal = 6), method = "Lnet/minecraft/client/renderer/GameRenderer;render(FJZ)V", cancellable = true)
+    public void mainMenu(float partialTicks, long nanoTime, boolean renderWorldIn, CallbackInfo info) {
+        if (renderWorldIn && this.minecraft.level != null) {
 
-    private void renderGuiLayer(float par1, boolean depthAlways, PoseStack pMatrix) {
-            if (this.minecraft.screen != null || !this.minecraft.options.hideGui) {
-                if (!RadialHandler.isShowing()) {
-                    boolean flag = this.isInMenuRoom();
-
-                    PoseStack poseStack = RenderSystem.getModelViewStack();
-                    poseStack.pushPose();
-                    poseStack.setIdentity();
-                    RenderSystem.applyModelViewMatrix();
-
-                    if (flag) {
-                        pMatrix.pushPose();
-                        Vec3 eye = GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render
-                                .getEye(GameRendererMixin.DATA_HOLDER.currentPass).getPosition();
-                        pMatrix.translate((GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.x - eye.x),
-                                (GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.y - eye.y),
-                                (GameRendererMixin.DATA_HOLDER.vrPlayer.vrdata_world_render.origin.z - eye.z));
-
-                        this.renderJrbuddasAwesomeMainMenuRoomNew(pMatrix);
-                        pMatrix.popPose();
-                    }
-
-                    pMatrix.pushPose();
-                    Vec3 vec31 = GuiHandler.applyGUIModelView(GameRendererMixin.DATA_HOLDER.currentPass, pMatrix);
-                    GuiHandler.guiFramebuffer.bindRead();
-                    RenderSystem.disableCull();
-                    RenderSystem.enableTexture();
-                    RenderSystem.setShaderTexture(0, GuiHandler.guiFramebuffer.getColorTextureId());
-                        RenderSystem.enableBlend();
-                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                                GlStateManager.SourceFactor.ONE_MINUS_DST_ALPHA, GlStateManager.DestFactor.ONE);
-                    if (depthAlways) {
-                        RenderSystem.depthFunc(519);
-                    } else {
-                        RenderSystem.depthFunc(515);
-                    }
-
-                    RenderSystem.depthMask(true);
-                    RenderSystem.enableDepthTest();
-
-                    // RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
-                    RenderSystem.depthFunc(515);
-                    RenderSystem.enableDepthTest();
-                    // RenderSystem.defaultAlphaFunc();
-                    RenderSystem.defaultBlendFunc();
-                    RenderSystem.enableCull();
-                    pMatrix.popPose();
-
-                    poseStack.popPose();
-                    RenderSystem.applyModelViewMatrix();
-                }
-            }
         }
+        else {
+            this.minecraft.getProfiler().push("MainMenu");
+            GL11.glDisable(GL11.GL_STENCIL_TEST);
 
-        private void renderJrbuddasAwesomeMainMenuRoomNew(PoseStack pMatrixStack) {
+            PoseStack pMatrixStack = new PoseStack();
+            this.renderJrbuddasAwesomeMainMenuRoomNew(pMatrixStack);
+
+        }
+    }
+        public void renderJrbuddasAwesomeMainMenuRoomNew(PoseStack pMatrixStack) {
             int i = 4;
             float f = 2.5F;
             float f1 = 1.3F;
-            float[] afloat = GameRendererMixin.DATA_HOLDER.vr.getPlayAreaSize();
+            float[] afloat = null;
             if (afloat == null)
                 afloat = new float[] { 2, 2 };
 
