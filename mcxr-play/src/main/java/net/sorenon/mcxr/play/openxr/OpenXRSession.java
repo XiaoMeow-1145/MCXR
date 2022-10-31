@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.openxr.*;
@@ -98,6 +99,10 @@ public class OpenXRSession implements AutoCloseable {
 
             //TODO support SRGB formats
             long[] desiredSwapchainFormats = {
+                    //SRGB formats
+                    GL21.GL_SRGB8_ALPHA8,
+                    GL21.GL_SRGB8,
+                    // Linear formats
                     GL11.GL_RGB10_A2,
                     GL30.GL_RGBA16F,
                     GL30.GL_RGB16F,
