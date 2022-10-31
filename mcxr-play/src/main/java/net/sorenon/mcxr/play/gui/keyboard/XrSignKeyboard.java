@@ -3,7 +3,9 @@ package net.sorenon.mcxr.play.gui.keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.sorenon.mcxr.play.gui.XrSignEditScreen;
 
 public class XrSignKeyboard extends XrAbstract2DKeyboard {
@@ -40,6 +42,10 @@ public class XrSignKeyboard extends XrAbstract2DKeyboard {
         signEditScreen.getSign().setMessage(1, Component.translatable(textField2.getValue()));
         signEditScreen.getSign().setMessage(2, Component.translatable(textField3.getValue()));
         signEditScreen.getSign().setMessage(3, Component.translatable(textField4.getValue()));
+        ClientPacketListener clientPacketListener = Minecraft.getInstance().getConnection();
+        if (clientPacketListener != null) {
+            clientPacketListener.send(new ServerboundSignUpdatePacket(this.signEditScreen.getSign().getBlockPos(), textField1.getValue(), textField2.getValue(), textField3.getValue(), textField4.getValue()));
+        }
         signEditScreen.onClose();
     }
 
