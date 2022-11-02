@@ -595,12 +595,6 @@ public final class XrInput {
                         GLFW.GLFW_MOUSE_BUTTON_LEFT, GLFW.GLFW_RELEASE, 0);
 
             }
-            if (actionSet.inventory.currentState) {
-                long heldTime = predictedDisplayTime - actionSet.inventory.lastChangeTime;
-                if (heldTime * 1E-09 > 1) {
-                    Minecraft.getInstance().pauseGame(false);
-                }
-            }
 
             //==immersive control test
             if(PlayOptions.immersiveControls){
