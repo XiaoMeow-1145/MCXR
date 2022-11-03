@@ -58,6 +58,8 @@ public final class XrInput {
     public static final VanillaGameplayActionSet vanillaGameplayActionSet = new VanillaGameplayActionSet();
     public static final GuiActionSet guiActionSet = new GuiActionSet();
 
+    private static boolean hasRecentered = false;
+
     private static long lastPollTime = 0;
     private static Pose gripPointOld = new Pose();
     private static boolean reachBack = false;
@@ -142,6 +144,10 @@ public final class XrInput {
      * Pre-tick + Pre-render, called once every frame
      */
     public static void pollActions() {
+        if(!hasRecentered) {
+            hasRecentered = true;
+            MCXRPlayClient.INSTANCE.MCXRGuiManager.needsReset = true;
+        }
         long time = System.nanoTime();
         if(Minecraft.getInstance().player != null) {
             lastHealth = Minecraft.getInstance().player.getHealth();
