@@ -366,6 +366,44 @@ public class VrFirstPersonRenderer {
 
             matrices.popPose();
         }
+
+        //TODO
+        if (FGM.isScreenOpen() && FGM.position.distanceTo(JOMLUtil.convert(MCXRPlayClient.viewSpacePoses.getUnscaledPhysicalPose().pos)) > 1 || true) {
+            matrices.pushPose();
+
+            transformToHand(matrices, 1 - MCXRPlayClient.getMainHand(), context.tickDelta());
+
+            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-90.0F));
+            matrices.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(180.0F));
+
+            matrices.translate(-2 / 16f, -12 / 16f, 0);
+
+            matrices.pushPose();
+            matrices.translate(2 / 16f, 12 / 16f, -1 / 16f);
+            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-75f));
+
+            matrices.scale(-0.005f, -0.005f, -0.005f);
+
+            var text = Component.literal("單擊菜單按鈕重置菜單屏幕");
+            int i = "deadmau5".equals(text.getString()) ? -10 : 0;
+            boolean bl = true;
+
+            Matrix4f matrix4f = matrices.last().pose();
+            float g = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+            int j = (int)(g * 255.0F) << 24;
+            Font font = Minecraft.getInstance().font;
+            float h = (float)(-font.width(text) / 2);
+            font.drawInBatch(text, h, (float)i, 553648127, false, matrix4f, consumers, bl, j, LightTexture.FULL_BRIGHT);
+            if (bl) {
+                font.drawInBatch(text, h, (float)i, -1, false, matrix4f, consumers, false, 0, LightTexture.FULL_BRIGHT);
+            }
+
+            matrices.popPose();
+
+            matrices.popPose();
+        }
+
+        consumers.endBatch();
     }
 
     private static void stringVertex(float x,
