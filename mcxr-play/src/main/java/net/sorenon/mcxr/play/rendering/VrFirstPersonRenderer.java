@@ -384,7 +384,7 @@ public class VrFirstPersonRenderer {
 
             matrices.scale(-0.005f, -0.005f, -0.005f);
 
-            var text = Component.literal("單擊菜單按鈕重置菜單屏幕");
+            var text = Component.literal("请按Menu键以重置菜单");
             int i = "deadmau5".equals(text.getString()) ? -10 : 0;
             boolean bl = true;
 
