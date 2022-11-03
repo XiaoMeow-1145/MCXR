@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -384,7 +385,7 @@ public class VrFirstPersonRenderer {
 
             matrices.scale(-0.005f, -0.005f, -0.005f);
 
-            var text = Component.literal("單擊菜單按鈕重置菜單屏幕");
+            var text = new TextComponent("單擊菜單按鈕重置菜單屏幕");
             int i = "deadmau5".equals(text.getString()) ? -10 : 0;
             boolean bl = true;
 
