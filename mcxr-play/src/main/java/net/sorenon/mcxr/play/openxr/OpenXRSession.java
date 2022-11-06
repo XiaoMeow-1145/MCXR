@@ -176,6 +176,7 @@ public class OpenXRSession implements AutoCloseable {
                     XrSessionBeginInfo sessionBeginInfo = XrSessionBeginInfo.malloc(stack);
                     sessionBeginInfo.set(XR10.XR_TYPE_SESSION_BEGIN_INFO, 0, viewConfigurationType);
                     instance.checkPanic(XR10.xrBeginSession(handle, sessionBeginInfo), "xrBeginSession");
+                    EXTPerformanceSettings.xrPerfSettingsSetPerformanceLevelEXT(handle, EXTPerformanceSettings.XR_PERF_SETTINGS_DOMAIN_CPU_EXT ,100);
                 }
                 running = true;
                 return false;
