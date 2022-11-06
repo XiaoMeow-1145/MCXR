@@ -104,7 +104,7 @@ public class OpenXRState {
             checkPanic(XR10.xrEnumerateInstanceExtensionProperties((ByteBuffer) null, numExtensions, properties));
 
             boolean missingOpenGL = true;
-            PointerBuffer extensions = stackCallocPointer(2);
+            PointerBuffer extensions = stackCallocPointer(3);
             while (properties.hasRemaining()) {
                 XrExtensionProperties prop = properties.get();
                 String extensionName = prop.extensionNameString();
@@ -114,6 +114,9 @@ public class OpenXRState {
                 }
                 if (extensionName.equals(KHRAndroidCreateInstance.XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME)) {
                     extensions.put(memAddress(stackUTF8(KHRAndroidCreateInstance.XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME)));
+                }
+                if(extensionName.equals(EXTPerformanceSettings.XR_EXT_PERFORMANCE_SETTINGS_EXTENSION_NAME)) {
+                    extensions.put(memAddress(stackUTF8(EXTPerformanceSettings.XR_EXT_PERFORMANCE_SETTINGS_EXTENSION_NAME)));
                 }
             }
 
