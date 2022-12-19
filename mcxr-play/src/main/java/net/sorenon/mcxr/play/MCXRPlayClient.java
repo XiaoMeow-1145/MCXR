@@ -2,6 +2,7 @@ package net.sorenon.mcxr.play;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -125,7 +126,7 @@ public class MCXRPlayClient implements ClientModInitializer {
                             matrices.mulPose(((BlockHitResult) hitResult).getDirection().getRotation());
                         } else {
                             matrices.mulPose(camera.rotation());
-                            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90.0F));
+                            matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
                         }
 
                         matrices.scale(0.5f, 1, 0.5f);

@@ -4,21 +4,17 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-//import com.mojang.math.Vector3f;
+import com.mojang.math.MatrixUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -28,11 +24,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.sorenon.mcxr.core.JOMLUtil;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.border.WorldBorder;
+import net.sorenon.mcxr.core.JOMLUtil;
 import net.sorenon.mcxr.core.MCXRCore;
 import net.sorenon.mcxr.core.Pose;
 import net.sorenon.mcxr.core.Teleport;
@@ -43,13 +38,13 @@ import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.accessor.MinecraftExt;
 import net.sorenon.mcxr.play.input.XrInput;
-import net.sorenon.mcxr.play.input.actionsets.VanillaGameplayActionSet;
 import net.sorenon.mcxr.play.rendering.MCXRCamera;
 import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
 import net.sorenon.mcxr.play.rendering.RenderPass;
 import net.sorenon.mcxr.play.rendering.XrRenderTarget;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
@@ -476,10 +471,10 @@ public class MCXRGameRenderer {
         GlStateManager._viewport(0, 0, width, height);
         GlStateManager._disableBlend();
 
-        Matrix4f matrix4f = Matrix4f.orthographic((float) width, (float) -height, 1000.0F, 3000.0F);
+        Matrix4f matrix4f = new Matrix4f().ortho2D((float) width, (float) -height, 1000.0F, 3000.0F);
         RenderSystem.setProjectionMatrix(matrix4f);
         if (shader.MODEL_VIEW_MATRIX != null) {
-            shader.MODEL_VIEW_MATRIX.set(Matrix4f.createTranslateMatrix(0.0F, 0.0F, -2000.0F));
+            shader.MODEL_VIEW_MATRIX.set(new Matrix4f().translate(0.0F, 0.0F, -2000.0F));
         }
 
         if (shader.PROJECTION_MATRIX != null) {
@@ -522,10 +517,10 @@ public class MCXRGameRenderer {
         GlStateManager._viewport(0, 0, width, height);
         GlStateManager._disableBlend();
 
-        Matrix4f matrix4f = Matrix4f.orthographic((float) width, (float) (-height), 1000.0F, 3000.0F);
+        Matrix4f matrix4f = new Matrix4f().ortho2D((float) width, (float) (-height), 1000.0F, 3000.0F);
         RenderSystem.setProjectionMatrix(matrix4f);
         if (shader.MODEL_VIEW_MATRIX != null) {
-            shader.MODEL_VIEW_MATRIX.set(Matrix4f.createTranslateMatrix(0, 0, -2000.0F));
+            shader.MODEL_VIEW_MATRIX.set(new Matrix4f().translate(0, 0, -2000.0F));
         }
 
         if (shader.PROJECTION_MATRIX != null) {
@@ -590,10 +585,10 @@ public class MCXRGameRenderer {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GlStateManager.SourceFactor.SRC_ALPHA.value, GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA.value);
 
-        Matrix4f matrix4f = Matrix4f.orthographic((float) width, (float) -height, 1000.0F, 3000.0F);
+        Matrix4f matrix4f = new Matrix4f().ortho2D((float) width, (float) -height, 1000.0F, 3000.0F);
         RenderSystem.setProjectionMatrix(matrix4f);
         if (shader.MODEL_VIEW_MATRIX != null) {
-            shader.MODEL_VIEW_MATRIX.set(Matrix4f.createTranslateMatrix(0.0F, 0.0F, -2000.0F));
+            shader.MODEL_VIEW_MATRIX.set(new Matrix4f().translate(0.0F, 0.0F, -2000.0F));
         }
 
         if (shader.PROJECTION_MATRIX != null) {
@@ -676,10 +671,10 @@ public class MCXRGameRenderer {
         GlStateManager._viewport(0, 0, width, height);
         GlStateManager._enableBlend();
 
-        Matrix4f matrix4f = Matrix4f.orthographic((float) width, (float) -height, 1000.0F, 3000.0F);
+        Matrix4f matrix4f = new Matrix4f().ortho2D((float) width, (float) -height, 1000.0F, 3000.0F);
         RenderSystem.setProjectionMatrix(matrix4f);
         if (shader.MODEL_VIEW_MATRIX != null) {
-            shader.MODEL_VIEW_MATRIX.set(Matrix4f.createTranslateMatrix(0.0F, 0.0F, -2000.0F));
+            shader.MODEL_VIEW_MATRIX.set(new Matrix4f().translate(0.0F, 0.0F, -2000.0F));
         }
 
         if (shader.PROJECTION_MATRIX != null) {

@@ -1,8 +1,8 @@
 package net.sorenon.mcxr.play.compat.iris.mixin;
 
-import com.mojang.math.Matrix4f;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import net.sorenon.mcxr.play.input.ControllerPoses;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -91,7 +91,7 @@ public class MixinCameraUniforms {
             offsetY -= halfIntervalSize;
             offsetZ -= halfIntervalSize;
 
-            target.multiply(Matrix4f.createTranslateMatrix(offsetX, offsetY, offsetZ));
+            target.mul(new Matrix4f().translate(offsetX, offsetY, offsetZ));
         }
     }
 }

@@ -72,33 +72,33 @@ public abstract class XrAbstract2DKeyboard {
                 Button key =  switch (character) {
 
                     case '\r' ->
-                        new Button(buttonX, buttonY, buttonwidth * 2, 20,
+                        Button.builder(
                                 Component.translatable("Enter"),
-                            this::returnButton);
+                            this::returnButton).bounds(buttonX, buttonY, buttonwidth * 2, 20).build();
                     case '\b' ->
-                        new Button(buttonX, buttonY, buttonwidth, 20,
+                        Button.builder(
                                 Component.translatable("Bksp"),
-                            this::backSpaceButton);
+                            this::backSpaceButton).bounds(buttonX, buttonY, buttonwidth, 20).build();
                     case ' ' ->
-                        new Button(buttonX + 150, buttonY, buttonwidth + 100, 20,
+                        Button.builder(
                                 Component.translatable("Space"),
-                            this::spaceButton);
+                            this::spaceButton).bounds(buttonX + 150, buttonY, buttonwidth + 100, 20).build();
                     case '\t' ->
-                        new Button(buttonX, buttonY, buttonwidth, 20,
+                        Button.builder(
                                 Component.translatable("Tab"),
-                            this::tabButton);
+                            this::tabButton).bounds(buttonX, buttonY, buttonwidth, 20).build();
                     case '\n' ->
-                        new Button(buttonX, buttonY, buttonwidth * 2, 20,
+                        Button.builder(
                                 Component.translatable("Shift"),
-                            this::shiftButton);
+                            this::shiftButton).bounds(buttonX, buttonY, buttonwidth * 2, 200).build();
                     case '\f' ->
-                        new Button(buttonX, buttonY, buttonwidth, 20,
+                        Button.builder(
                                 Component.translatable("Caps"),
-                            this::capsButton);
+                            this::capsButton).bounds(buttonX, buttonY, buttonwidth, 20).build();
                     default ->
-                        new Button(buttonX, buttonY, buttonwidth, 20,
+                        Button.builder(
                                 Component.translatable(Character.toString(character)),
-                            this::letterButton);
+                            this::letterButton).bounds(buttonX, buttonY, buttonwidth, 20).build();
 
                 };
 

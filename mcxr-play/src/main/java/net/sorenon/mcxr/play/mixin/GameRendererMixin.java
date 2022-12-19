@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.sorenon.mcxr.play.MCXRPlayClient;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +25,11 @@ public class GameRendererMixin {
     @Shadow @Final private Map<String, ShaderInstance> shaders;
 
     @Inject(method = "reloadShaders", at = @At(value = "TAIL"))
-    void loadGuiShader(ResourceManager manager, CallbackInfo ci) {
+    void loadGuiShader(ResourceProvider resourceProvider, CallbackInfo ci) {
         ArrayList<Pair<ShaderInstance, Consumer<ShaderInstance>>> loadingShaders = new ArrayList<>();
         try {
-            loadingShaders.add(Pair.of(new ShaderInstance(manager, "blit_screen_mcxr", DefaultVertexFormat.BLIT_SCREEN), (shader) -> MCXRPlayClient.MCXR_GAME_RENDERER.blitShader = shader));
-            loadingShaders.add(Pair.of(new ShaderInstance(manager, "gui_blit_screen_mcxr", DefaultVertexFormat.BLIT_SCREEN), (shader) -> MCXRPlayClient.MCXR_GAME_RENDERER.guiBlitShader = shader));
+            loadingShaders.add(Pair.of(new ShaderInstance(resourceProvider, "blit_screen_mcxr", DefaultVertexFormat.BLIT_SCREEN), (shader) -> MCXRPlayClient.MCXR_GAME_RENDERER.blitShader = shader));
+            loadingShaders.add(Pair.of(new ShaderInstance(resourceProvider, "gui_blit_screen_mcxr", DefaultVertexFormat.BLIT_SCREEN), (shader) -> MCXRPlayClient.MCXR_GAME_RENDERER.guiBlitShader = shader));
         } catch (IOException e) {
             throw new RuntimeException("[MCXR] Could not load custom shaders", e);
         }

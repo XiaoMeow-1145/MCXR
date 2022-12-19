@@ -1,7 +1,6 @@
 package net.sorenon.mcxr.play.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -530,7 +529,7 @@ public final class XrInput {
             Vector3d result = FGM.guiRaycast(pos, new Vector3d(dir));
             if (result != null) {
                 Vector3d vec = result.sub(convert(FGM.position));
-                FGM.orientation.invert(new Quaterniond()).transform(vec);
+                FGM.orientation.invert(new Quaternionf()).transform(vec);
                 vec.y *= ((double) FGM.guiFramebufferWidth / FGM.guiFramebufferHeight);
 
                 vec.x /= FGM.size;

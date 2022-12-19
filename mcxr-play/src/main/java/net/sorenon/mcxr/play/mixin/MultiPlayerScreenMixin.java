@@ -32,16 +32,16 @@ public abstract class MultiPlayerScreenMixin extends Screen {
     public GuiEventListener addrenderableMixin(JoinMultiplayerScreen instance, GuiEventListener guiEventListener) {
         if (!PlayOptions.xrUninitialized) {
             if (FabricLoader.getInstance().isModLoaded("titleworlds")) {
-                return addRenderableWidget(new Button(this.width / 2 + 54, this.height - 52, 100, 20, Component.translatable("selectServer.add"), (button) -> {
+                return addRenderableWidget(Button.builder(Component.translatable("selectServer.add"), (button) -> {
                     this.minecraft.setScreen(new AddServerScreen(Component.translatable("Add server"), instance));
-                }));
+                }).bounds(this.width / 2 + 54, this.height - 52, 100, 20).build());
             }
         }
 
-        return addRenderableWidget(new Button(this.width / 2 + 54, this.height - 52, 100, 20, Component.translatable("selectServer.add"), (button) -> {
+        return addRenderableWidget(Button.builder(Component.translatable("selectServer.add"), (button) -> {
             this.editingServer = new ServerData(I18n.get("selectServer.defaultName", new Object[0]), "", false);
             this.minecraft.setScreen(new EditServerScreen(this, this::addServerCallback, this.editingServer));
-        }));
+        }).bounds(this.width / 2 + 54, this.height - 52, 100, 20).build());
 
     }
 }

@@ -4,9 +4,8 @@ package net.tr7zw;
 // Licence for software: LICENCE-tr7zw
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import org.joml.Matrix4f;
 
 public class MapRenderer {
 
@@ -24,16 +24,16 @@ public class MapRenderer {
                                             ItemStack stack, boolean small, boolean lefthanded) {
         Minecraft client = Minecraft.getInstance();
         if(lefthanded) {
-            matrices.mulPose(Vector3f.XP.rotationDegrees(-20f));
-            matrices.mulPose(Vector3f.YP.rotationDegrees(180.0f));
-            matrices.mulPose(Vector3f.ZP.rotationDegrees(180.0f));
+            matrices.mulPose(Axis.XP.rotationDegrees(-20f));
+            matrices.mulPose(Axis.YP.rotationDegrees(180.0f));
+            matrices.mulPose(Axis.ZP.rotationDegrees(180.0f));
             matrices.scale(0.38f, 0.38f, 0.38f);
 
             matrices.translate(-0.9, -1.8, 0.1);
         } else {
-            matrices.mulPose(Vector3f.XP.rotationDegrees(-20f));
-            matrices.mulPose(Vector3f.YP.rotationDegrees(180.0f));
-            matrices.mulPose(Vector3f.ZP.rotationDegrees(180.0f));
+            matrices.mulPose(Axis.XP.rotationDegrees(-20f));
+            matrices.mulPose(Axis.YP.rotationDegrees(180.0f));
+            matrices.mulPose(Axis.ZP.rotationDegrees(180.0f));
             matrices.scale(0.38f, 0.38f, 0.38f);
 
             matrices.translate(-0.9, -1.8, 0.1);

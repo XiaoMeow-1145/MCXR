@@ -42,11 +42,13 @@ public class BisectScreen extends Screen {
                 return super.keyPressed(keyCode, scanCode, modifiers);
             }
         });
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 4 + 96 + 18, 200, 20, Component.translatable("addServer.add"), (button) -> {
+        Button.Builder bBuilder = Button.builder(Component.translatable("addServer.add"), (button) -> {
             sendEmail(editBox.getValue());
             BisectScreen.this.minecraft.getToasts().addToast(new SystemToast(SystemToast.SystemToastIds.PERIODIC_NOTIFICATION, Component.literal("Check your email!"), null));
             this.onClose();
-        }));
+        }).bounds(this.width / 2 - 100, this.height / 4 + 96 + 18, 200, 20);
+
+        this.addRenderableWidget(bBuilder.build());
     }
 
     @Override

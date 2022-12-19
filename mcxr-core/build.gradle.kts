@@ -19,10 +19,7 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${properties["minecraft_version"].toString()}")
-    mappings(loom.layered {
-        this.addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:${properties["minecraft_version"].toString()}+build.${properties["quilt_mappings"].toString()}:v2"))
-        officialMojangMappings()
-    })
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${properties["loader_version"].toString()}")
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_version"].toString()}")
@@ -31,7 +28,6 @@ dependencies {
         exclude(group = "net.fabricmc.fabric-api")
     }
 
-    include(implementation("org.joml:joml:${properties["joml_version"].toString()}")!!)
     include(implementation("com.electronwill.night-config:core:${properties["night_config_version"].toString()}")!!)
     include(implementation("com.electronwill.night-config:toml:${properties["night_config_version"].toString()}")!!)
     include(implementation("org.apache.httpcomponents:httpclient:4.5.13")!!)

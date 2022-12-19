@@ -21,22 +21,22 @@ public class QuickMenu extends Screen {
 
         ArrayList<Button> QuickMenuButtons = new ArrayList<>();
 
-        QuickMenuButtons.add(new Button((this.width/2) - 25, this.height/2, 70, 20, Component.translatable("QuickChat"), (button ) -> {
+        QuickMenuButtons.add(Button.builder(Component.translatable("QuickChat"), (button ) -> {
             Minecraft.getInstance().setScreen(new net.sorenon.mcxr.play.gui.QuickChat("QuickChat"));
-        }));
+        }).bounds((this.width/2) - 25, this.height/2, 70, 20).build());
         if (FabricLoader.getInstance().isModLoaded("voicechat")) {
             SimpleVoiceChatCompat.createButton(QuickMenuButtons, this.width, this.height);
         }
 
-        QuickMenuButtons.add(new Button((this.width/2) - 25, this.height/2, 70, 20, Component.translatable("Chat"), (button ) -> {
+        QuickMenuButtons.add(Button.builder(Component.translatable("Chat"), (button ) -> {
             Minecraft.getInstance().setScreen(new XrChatScreen(""));
-        }));
+        }).bounds((this.width/2) - 25, this.height/2, 70, 20).build());
 
         for (int i = 0; i < QuickMenuButtons.size(); i++) {
             Button QuickMenuButton = QuickMenuButtons.get(i);
 
-            QuickMenuButton.x = (this.width / 2) - (QuickMenuButton.getWidth()/2);
-            QuickMenuButton.y = (this.height / 3) + (i*30);
+            QuickMenuButton.setX((this.width / 2) - (QuickMenuButton.getWidth() / 2));
+            QuickMenuButton.setY((this.height / 3) + (i * 30));
 
             addRenderableWidget(QuickMenuButton);
         }

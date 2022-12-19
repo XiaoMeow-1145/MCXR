@@ -26,17 +26,16 @@ public class PauseScreenMixin extends Screen {
     @Inject(method = "init", at = @At("HEAD"))
     void init(CallbackInfo ci) {
         int y = this.height / 4 + 48 + -16;
-        this.addRenderableWidget(new Button(
-                this.width / 2 + 104,
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("mcxr.options.title"),
+                button -> this.minecraft.setScreen(new MCXROptionsScreen(this))).bounds(this.width / 2 + 104,
                 y,
                 90,
-                20,
-                Component.translatable("mcxr.options.title"),
-                button -> this.minecraft.setScreen(new MCXROptionsScreen(this))));
+                20).build());
 
 
         this.addRenderableWidget(
-                new Button(this.width/2 + 127, this.height / 4 + 48 + 72 + 12, 45, 20, Component.translatable("Reset"), (button -> {
+                Button.builder(Component.translatable("Reset"), (button -> {
                     assert this.minecraft != null;
                     // First we fetch the name of the system from OpenXR
                     OpenXRState OPEN_XR = MCXRPlayClient.OPEN_XR_STATE;
@@ -61,10 +60,8 @@ public class PauseScreenMixin extends Screen {
                     // Common options for both platforms.
                     this.minecraft.options.graphicsMode().set(GraphicsStatus.FANCY);
 
-                }))
+                })).bounds(this.width/2 + 127, this.height / 4 + 48 + 72 + 12, 45, 20).build()
         );
-
-
     }
 
 

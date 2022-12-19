@@ -1,5 +1,6 @@
 package net.sorenon.mcxr.play.rendering;
 
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -54,8 +55,8 @@ public class MCXRCamera extends Camera {
         thiz.pitch(pose.getMCPitch());
         thiz.yaw(pose.getMCYaw());
         this.rotation().set(0.0F, 0.0F, 0.0F, 1.0F);
-        this.rotation().mul(com.mojang.math.Vector3f.YP.rotationDegrees(-pose.getMCYaw()));
-        this.rotation().mul(com.mojang.math.Vector3f.XP.rotationDegrees(pose.getMCPitch()));
+        this.rotation().mul(Axis.YP.rotationDegrees(-pose.getMCYaw()));
+        this.rotation().mul(Axis.XP.rotationDegrees(pose.getMCPitch()));
 
         Vector3f look = pose.getOrientation().transform(new Vector3f(0, 0, -1));
         Vector3f up = pose.getOrientation().transform(new Vector3f(0, 1, 0));

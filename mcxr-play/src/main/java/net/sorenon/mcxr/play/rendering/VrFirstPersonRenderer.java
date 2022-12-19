@@ -2,9 +2,7 @@ package net.sorenon.mcxr.play.rendering;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
@@ -49,13 +47,10 @@ import net.sorenon.mcxr.play.PlayOptions;
 import net.sorenon.mcxr.play.input.XrInput;
 import net.sorenon.mcxr.play.openxr.MCXRGameRenderer;
 import net.tr7zw.MapRenderer;
+import org.joml.*;
 import org.joml.Math;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import java.util.OptionalDouble;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -124,7 +119,7 @@ public class VrFirstPersonRenderer {
             matrices.pushPose();
             Vec3 pos = FGM.position.subtract(convert(((RenderPass.XrWorld) XR_RENDERER.renderPass).eyePoses.getUnscaledPhysicalPose().getPos()));
             matrices.translate(pos.x, pos.y, pos.z);
-            matrices.mulPose(new Quaternion((float) FGM.orientation.x, (float) FGM.orientation.y, (float) FGM.orientation.z, (float) FGM.orientation.w));
+            matrices.mulPose(new Quaternionf((float) FGM.orientation.x, (float) FGM.orientation.y, (float) FGM.orientation.z, (float) FGM.orientation.w));
             renderGuiQuad(matrices.last(), consumers);
             matrices.popPose();
             consumers.endLastBatch();
@@ -143,8 +138,8 @@ public class VrFirstPersonRenderer {
                 double z = Mth.lerp(context.tickDelta(), camEntity.zOld, camEntity.getZ());
                 matrices.translate(x - camPos.x, y - camPos.y, z - camPos.z);
 
-                matrices.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(-camEntity.getYRot() + 180.0F));
-                matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90 - camEntity.getXRot()));
+                matrices.mulPose(Axis.YP.rotationDegrees(-camEntity.getYRot() + 180.0F));
+                matrices.mulPose(Axis.XP.rotationDegrees(90 - camEntity.getXRot()));
 
                 Matrix4f model = matrices.last().pose();
                 Matrix3f normal = matrices.last().normal();
@@ -174,7 +169,7 @@ public class VrFirstPersonRenderer {
                     matrices.mulPose(((BlockHitResult) hitResult).getDirection().getRotation());
                 } else {
                     matrices.mulPose(camera.rotation());
-                    matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(90.0F));
+                    matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
                 }
 
                 //cursor render part 1 (over water) - also in MCXRPlayClient.java
@@ -296,10 +291,8 @@ public class VrFirstPersonRenderer {
 
             matrices.pushPose(); //2
             matrices.mulPose(
-                    convert(
-                            pose.getOrientation()
-                                    .rotateX(Math.toRadians(PlayOptions.handPitchAdjust), new Quaternionf())
-                    )
+                    pose.getOrientation()
+                            .rotateX(Math.toRadians(PlayOptions.handPitchAdjust), new Quaternionf())
             );
             boolean debug = Minecraft.getInstance().options.renderDebug;
 
@@ -334,9 +327,7 @@ public class VrFirstPersonRenderer {
 
             if (debug) {
                 matrices.mulPose(
-                        convert(
-                                pose.getOrientation()
-                        )
+                        pose.getOrientation()
                 );
                 FartUtil.renderCrosshair(consumers, context.matrixStack(), 0.1f, false);
             }
@@ -352,14 +343,14 @@ public class VrFirstPersonRenderer {
 
             transformToHand(matrices, 0, context.tickDelta());
 
-            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-90.0F));
-            matrices.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(180.0F));
+            matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
+            matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
 
             matrices.translate(-2 / 16f, -12 / 16f, 0);
 
             matrices.pushPose();
             matrices.translate(2 / 16f, 9 / 16f, -1 / 16f);
-            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-75f));
+            matrices.mulPose(Axis.XP.rotationDegrees(-75f));
             renderGuiQuad(matrices.last(), consumers);
             consumers.endLastBatch();
             matrices.popPose();
@@ -411,17 +402,17 @@ public class VrFirstPersonRenderer {
 
         //Transform to controller
         matrices.translate(gripPos.x - eyePos.x(), gripPos.y - eyePos.y(), gripPos.z - eyePos.z());
-        matrices.mulPose(convert(pose.getOrientation()));
+        matrices.mulPose(pose.getOrientation());
 
         //Apply adjustments
-        matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-90.0F));
+        matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
         matrices.scale(0.4f, 0.4f, 0.4f);
 
         float scale = MCXRPlayClient.getCameraScale(tickDelta);
         matrices.scale(scale, scale, scale);
 
         matrices.translate(0, 1 / 16f, -1.5f / 16f);
-        matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(PlayOptions.handPitchAdjust));
+        matrices.mulPose(Axis.XP.rotationDegrees(PlayOptions.handPitchAdjust));
 
         if (hand == MCXRPlayClient.getMainHand() && XrInput.attackDelay == 0) {
             float swing = -0.1f * Mth.sin((float) (Math.sqrt(Minecraft.getInstance().player.getAttackAnim(tickDelta)) * Math.PI * 2));
@@ -513,13 +504,13 @@ public class VrFirstPersonRenderer {
 
                 if (handIndex == MCXRPlayClient.getMainHand() && XrInput.attackDelay == 0) { //item swing animation if not using motion controls
                     float swing = -0.6f * Mth.sin((float) (Math.sqrt(player.getAttackAnim(deltaTick)) * Math.PI * 2));
-                    matrices.mulPose(com.mojang.math.Vector3f.XP.rotation(swing));
+                    matrices.mulPose(Axis.XP.rotation(swing));
                 }
 
                 if (stack.getItem() == Items.CROSSBOW) {
                     float f = handIndex == 0 ? -1 : 1;
                     matrices.translate(f * -1.5 / 16f, 0, 0);
-                    matrices.mulPose(Quaternion.fromXYZ(0, f * Math.toRadians(15), 0));
+                    matrices.mulPose(new Quaternionf(0, f * Math.toRadians(15), 0, 1));
                 }
 
                 if (stack.getItem() == Items.TRIDENT && player.getUseItem() == stack) {
@@ -532,7 +523,7 @@ public class VrFirstPersonRenderer {
                         matrices.translate(0, o * 0.004, 0);
                     }
                     matrices.translate(0, 0, a * 0.2);
-                    matrices.mulPose(Quaternion.fromXYZ(Math.toRadians(90), 0, 0));
+                    matrices.mulPose(new Quaternionf(Math.toRadians(90), 0, 0, 1));
                 }
 
                 if (stack.getItem() == Items.FILLED_MAP) {
@@ -542,7 +533,7 @@ public class VrFirstPersonRenderer {
                     //item tilted forward in menu or for tool using motion controls, but not if right-clicking with tool (eg trident)
                     if ((FGM.isScreenOpen() || (XrInput.extendReach>0 && PlayOptions.immersiveControls)) && handIndex == MCXRPlayClient.getMainHand() && player.getUseItem() != stack){
                         float n=-80;
-                        matrices.mulPose(Quaternion.fromXYZ(Math.toRadians(n), 0, 0));
+                        matrices.mulPose(new Quaternionf(Math.toRadians(n), 0, 0, 1));
                         matrices.translate(0, 0, -0.25);
                     }
                     if ((XrInput.eatDelay==0 && !FGM.isScreenOpen()) || handIndex != MCXRPlayClient.getMainHand()){//room scale items if not eating/in inventory
@@ -561,13 +552,13 @@ public class VrFirstPersonRenderer {
                                     float h = Mth.abs(Mth.cos(f / 4.0F * 3.1415927F) * -0.07F);
                                     matrices.translate(0.0, (double)h, 0.0);
                                 }
-                                matrices.mulPose(Quaternion.fromXYZ(Math.toRadians(20), 0, 0));
+                                matrices.mulPose(new Quaternionf(Math.toRadians(20), 0, 0, 1));
                                 break;
                             case BLOCK: //hacky shield pose fix
                                 matrices.translate((2 * handIndex - 1) * -0.2 - 0.0465, 0.06 * (1 - handIndex), 0);
-                                matrices.mulPose(Quaternion.fromXYZ(0, 0, Math.toRadians((2 * handIndex - 1) * -3)));
-                                matrices.mulPose(Quaternion.fromXYZ(0, Math.toRadians((2 * handIndex - 1) * 45), 0));
-                                matrices.mulPose(Quaternion.fromXYZ(Math.toRadians(-50), 0, 0));
+                                matrices.mulPose(new Quaternionf(0, 0, Math.toRadians((2 * handIndex - 1) * -3), 1));
+                                matrices.mulPose(new Quaternionf(0, Math.toRadians((2 * handIndex - 1) * 45), 0, 1));
+                                matrices.mulPose(new Quaternionf(Math.toRadians(-50), 0, 0, 1));
                         }
                     }
 
@@ -589,8 +580,8 @@ public class VrFirstPersonRenderer {
 
             transformToHand(matrices, handIndex, deltaTick);
 
-            matrices.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(-90.0F));
-            matrices.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(180.0F));
+            matrices.mulPose(Axis.XP.rotationDegrees(-90.0F));
+            matrices.mulPose(Axis.YP.rotationDegrees(180.0F));
 
             matrices.translate(-2 / 16f, -12 / 16f, 0);
 

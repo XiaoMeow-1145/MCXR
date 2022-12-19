@@ -1,8 +1,6 @@
 package net.sorenon.mcxr.play.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -14,6 +12,7 @@ import net.sorenon.mcxr.play.rendering.MCXRMainTarget;
 import net.sorenon.mcxr.play.rendering.MCXRCamera;
 import net.sorenon.mcxr.play.rendering.RenderPass;
 import net.sorenon.mcxr.play.accessor.Matrix4fExt;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +36,7 @@ public abstract class GameRendererMixin {
 
     @Shadow
     @Final
-    private Minecraft minecraft;
+    Minecraft minecraft;
 
     @Shadow
     private boolean renderHand;
@@ -104,18 +103,18 @@ public abstract class GameRendererMixin {
     /**
      * Rotate the matrix stack using a quaternion rather than pitch and yaw
      */
-    @Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lcom/mojang/math/Quaternion;)V", ordinal = 2), method = "renderLevel")
-    void multiplyPitch(PoseStack matrixStack, Quaternion pitchQuat) {
+    @Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lorg/joml/Quaternionf;)V", ordinal = 2), method = "renderLevel")
+    void multiplyPitch(PoseStack matrixStack, Quaternionf pitchQuat) {
         if (XR_RENDERER.renderPass == RenderPass.VANILLA) {
             matrixStack.mulPose(pitchQuat);
         }
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lcom/mojang/math/Quaternion;)V", ordinal = 3), method = "renderLevel")
-    void multiplyYaw(PoseStack matrixStack, Quaternion yawQuat) {
+    @Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lorg/joml/Quaternionf;)V", ordinal = 3), method = "renderLevel")
+    void multiplyYaw(PoseStack matrixStack, Quaternionf yawQuat) {
         if (XR_RENDERER.renderPass instanceof RenderPass.XrWorld xrWorldPass) {
             var inv = xrWorldPass.eyePoses.getMinecraftPose().getOrientation().invert(new Quaternionf());
-            matrixStack.mulPose(new Quaternion(inv.x, inv.y, inv.z, inv.w));
+            matrixStack.mulPose(new Quaternionf(inv.x, inv.y, inv.z, inv.w));
         } else {
             matrixStack.mulPose(yawQuat);
         }

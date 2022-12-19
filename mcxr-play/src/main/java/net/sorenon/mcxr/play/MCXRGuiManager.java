@@ -36,7 +36,7 @@ public class MCXRGuiManager {
      * The transform of the GUI in physical space
      */
     public Vec3 position = null;
-    public Quaterniond orientation = new Quaterniond(0, 0, 0, 1);
+    public Quaternionf orientation = new Quaternionf(0, 0, 0, 1);
 
     public void init() {
         guiScale = calcGuiScale();
@@ -90,7 +90,7 @@ public class MCXRGuiManager {
     public void resetTransform() {
         MCXRCamera camera = (MCXRCamera) Minecraft.getInstance().gameRenderer.getMainCamera();
         if (camera.isInitialized()) {
-            orientation = JOMLUtil.convertd(camera.rotation());
+            orientation = camera.rotation();
             position = JOMLUtil.convert(MCXRPlayClient.viewSpacePoses.getUnscaledPhysicalPose().getPos().add(orientation.transform(new Vector3f(0, -0.5f, 1))));
             needsReset = false;
         } else {

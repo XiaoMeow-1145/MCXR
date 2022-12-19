@@ -47,7 +47,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("HEAD"))
     void init(CallbackInfo ci) {
         this.addRenderableWidget(
-                new Button(this.width/2 + 127, this.height / 4 + 48 + 73 + 12, 45, 20, Component.translatable("Reset"), (button -> {
+                Button.builder(Component.translatable("Reset"), (button -> {
                     assert this.minecraft != null;
                     // First we fetch the name of the system from OpenXR
                     OpenXRState OPEN_XR = MCXRPlayClient.OPEN_XR_STATE;
@@ -71,17 +71,16 @@ public abstract class TitleScreenMixin extends Screen {
 
                     // Common options for both platforms.
                     this.minecraft.options.graphicsMode().set(GraphicsStatus.FANCY);
-                }))
+                })).bounds(this.width/2 + 127, this.height / 4 + 48 + 73 + 12, 45, 20).build()
         );
 
         int y = this.height / 4 + 48;
-        this.addRenderableWidget(new Button(
-                this.width / 2 + 104,
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("mcxr.options.title"),
+                button -> this.minecraft.setScreen(new MCXROptionsScreen(this))).bounds(this.width / 2 + 104,
                 y,
                 90,
-                20,
-                Component.translatable("mcxr.options.title"),
-                button -> this.minecraft.setScreen(new MCXROptionsScreen(this))));
+                20).build());
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/client/gui/screens/TitleScreen;drawString(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"))

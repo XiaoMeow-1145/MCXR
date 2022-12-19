@@ -2,7 +2,6 @@ package net.sorenon.mcxr.play.gui.keyboard;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.chat.ClientChatPreview;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -58,11 +57,10 @@ public class XrChatKeyboard extends XrAbstract2DKeyboard {
             chatScreen.onClose();
         } else {
             String string = StringUtils.normalizeSpace(chatBox.getValue().trim());
-            Component component = Util.mapNullable(this.chatScreen.getChatPreview().pull(string), ClientChatPreview.Preview::response);
             if (string.startsWith("/")) {
-                Minecraft.getInstance().player.commandSigned(string.substring(1), component);
+                Minecraft.getInstance().player.connection.sendCommand(string.substring(1));
             } else {
-                Minecraft.getInstance().player.chatSigned(string, component);
+                Minecraft.getInstance().player.connection.sendChat(string);
             }
         }
     }

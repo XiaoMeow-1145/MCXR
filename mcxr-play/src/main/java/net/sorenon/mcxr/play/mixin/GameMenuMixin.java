@@ -29,7 +29,7 @@ public class GameMenuMixin extends Screen {
     @Inject(at=@At("RETURN"), method = "createPauseMenu")
     private void addResetButton(CallbackInfo ci) {
         this.addRenderableWidget(
-                new Button(this.width/2 + 127, this.height / 4 + 48 + 73 + 12, 45, 20, Component.translatable("Reset"), (button -> {
+                Button.builder(Component.translatable("Reset"), (button -> {
                     assert this.minecraft != null;
                     // First we fetch the name of the system from OpenXR
                     OpenXRState OPEN_XR = MCXRPlayClient.OPEN_XR_STATE;
@@ -56,7 +56,7 @@ public class GameMenuMixin extends Screen {
                     this.minecraft.options.framerateLimit().set(72);
                     this.minecraft.options.cloudStatus().set(CloudStatus.FAST);
 
-                }))
+                })).bounds(this.width/2 + 127, this.height / 4 + 48 + 73 + 12, 45, 20).build()
         );
     }
 
