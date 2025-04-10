@@ -33,13 +33,13 @@ jobs:
         run: ./gradlew build
       - name: capture build artifacts (mcxr-core)
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: mcxr-core
           path: mcxr-core/build/libs/mcxr-core-0.2.2+1.19.jar
       - name: capture build artifacts (mcxr-play)
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: mcxr-play
           path: mcxr-play/build/libs/mcxr-play-0.2.2+1.19.jar
